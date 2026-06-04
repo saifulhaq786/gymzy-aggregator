@@ -120,8 +120,8 @@ const RegisterScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  scroll: { flexGrow: 1, paddingHorizontal: SPACING.base, paddingTop: 60, paddingBottom: 40 },
+  container: { flex: 1, backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' },
+  scroll: { flexGrow: 1, width: '100%', maxWidth: 480, paddingHorizontal: SPACING.base, paddingTop: 60, paddingBottom: 40 },
 
   backBtn: { marginBottom: SPACING.lg, width: 40 },
   title: { fontSize: FONTS.sizes['3xl'], fontWeight: '900', color: COLORS.textPrimary },

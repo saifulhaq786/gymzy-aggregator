@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useAuthStore from '../../store/authStore';
@@ -28,6 +29,7 @@ const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleModalVisible, setGoogleModalVisible] = useState(false);
 
   const { login, googleLogin } = useAuthStore();
 
@@ -44,42 +46,46 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleGoogleLogin = async () => {
-    Alert.alert(
-      'Google Sign-In (Simulation)',
-      'Select a simulated Google profile to test the app state:',
-      [
-        {
-          text: 'Demo Gym Member (Jane Doe)',
-          onPress: async () => {
-            setGoogleLoading(true);
-            try {
-              await googleLogin('mock_user');
-            } catch (err) {
-              Alert.alert('Google Login Failed', err.response?.data?.message || err.message);
-            } finally {
-              setGoogleLoading(false);
+    if (Platform.OS === 'web') {
+      setGoogleModalVisible(true);
+    } else {
+      Alert.alert(
+        'Google Sign-In (Simulation)',
+        'Select a simulated Google profile to test the app state:',
+        [
+          {
+            text: 'Demo Gym Member (Jane Doe)',
+            onPress: async () => {
+              setGoogleLoading(true);
+              try {
+                await googleLogin('mock_user');
+              } catch (err) {
+                Alert.alert('Google Login Failed', err.response?.data?.message || err.message);
+              } finally {
+                setGoogleLoading(false);
+              }
             }
-          }
-        },
-        {
-          text: 'Demo Gym Owner (John Smith)',
-          onPress: async () => {
-            setGoogleLoading(true);
-            try {
-              await googleLogin('mock_owner');
-            } catch (err) {
-              Alert.alert('Google Login Failed', err.response?.data?.message || err.message);
-            } finally {
-              setGoogleLoading(false);
+          },
+          {
+            text: 'Demo Gym Owner (John Smith)',
+            onPress: async () => {
+              setGoogleLoading(true);
+              try {
+                await googleLogin('mock_owner');
+              } catch (err) {
+                Alert.alert('Google Login Failed', err.response?.data?.message || err.message);
+              } finally {
+                setGoogleLoading(false);
+              }
             }
+          },
+          {
+            text: 'Cancel',
+            style: 'cancel'
           }
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        }
-      ]
-    );
+        ]
+      );
+    }
   };
 
   return (
@@ -183,13 +189,69 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Web Fallback Simulation Modal */}
+      <Modal
+        visible={googleModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setGoogleModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Google Sign-In</Text>
+            <Text style={styles.modalSubtitle}>Select a simulated profile to test the app:</Text>
+
+            <TouchableOpacity
+              style={[styles.modalOptionBtn, { backgroundColor: COLORS.primary }]}
+              onPress={async () => {
+                setGoogleModalVisible(false);
+                setGoogleLoading(true);
+                try {
+                  await googleLogin('mock_user');
+                } catch (err) {
+                  Alert.alert('Google Login Failed', err.response?.data?.message || err.message);
+                } finally {
+                  setGoogleLoading(false);
+                }
+              }}
+            >
+              <Text style={styles.modalOptionText}>Demo Gym Member (Jane Doe)</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.modalOptionBtn, { backgroundColor: COLORS.bgElevated, borderWidth: 1, borderColor: COLORS.border }]}
+              onPress={async () => {
+                setGoogleModalVisible(false);
+                setGoogleLoading(true);
+                try {
+                  await googleLogin('mock_owner');
+                } catch (err) {
+                  Alert.alert('Google Login Failed', err.response?.data?.message || err.message);
+                } finally {
+                  setGoogleLoading(false);
+                }
+              }}
+            >
+              <Text style={[styles.modalOptionText, { color: COLORS.textPrimary }]}>Demo Gym Owner (John Smith)</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalCancelBtn}
+              onPress={() => setGoogleModalVisible(false)}
+            >
+              <Text style={styles.modalCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  scroll: { flexGrow: 1, paddingHorizontal: SPACING.base, paddingTop: 80, paddingBottom: 40 },
+  container: { flex: 1, backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' },
+  scroll: { flexGrow: 1, width: '100%', maxWidth: 480, paddingHorizontal: SPACING.base, paddingTop: 80, paddingBottom: 40 },
 
   header: { alignItems: 'center', marginBottom: SPACING['3xl'] },
   logo: { fontSize: 36, fontWeight: '900', color: COLORS.primary, letterSpacing: 2 },
@@ -255,6 +317,59 @@ const styles = StyleSheet.create({
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: SPACING.xl },
   footerText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.base },
   footerLink: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base },
+
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: SPACING.md,
+  },
+  modalContent: {
+    backgroundColor: COLORS.bgCard,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.xl,
+    width: '100%',
+    maxWidth: 380,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    alignItems: 'center',
+    ...SHADOWS.lg,
+  },
+  modalTitle: {
+    fontSize: FONTS.sizes.lg,
+    fontWeight: '800',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
+  },
+  modalSubtitle: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.lg,
+    textAlign: 'center',
+  },
+  modalOptionBtn: {
+    width: '100%',
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  modalOptionText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: FONTS.sizes.base,
+  },
+  modalCancelBtn: {
+    marginTop: SPACING.xs,
+    padding: SPACING.sm,
+  },
+  modalCancelText: {
+    color: COLORS.textMuted,
+    fontWeight: '600',
+    fontSize: FONTS.sizes.base,
+  },
 });
 
 export default LoginScreen;

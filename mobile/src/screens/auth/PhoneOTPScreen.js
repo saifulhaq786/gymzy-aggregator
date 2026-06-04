@@ -69,81 +69,84 @@ const PhoneOTPScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <TouchableOpacity style={styles.backBtn} onPress={() => step === 'otp' ? setStep('phone') : navigation.goBack()}>
-        <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
-      </TouchableOpacity>
-
-      <View style={styles.content}>
-        <Text style={styles.icon}>{step === 'phone' ? '📱' : '🔐'}</Text>
-        <Text style={styles.title}>{step === 'phone' ? 'Phone Login' : 'Verify OTP'}</Text>
-        <Text style={styles.subtitle}>
-          {step === 'phone'
-            ? 'Enter your phone number to receive an OTP'
-            : `OTP sent to +91 ${phone}`}
-        </Text>
-
-        {step === 'phone' ? (
-          <View style={styles.phoneRow}>
-            <View style={styles.countryCode}>
-              <Text style={styles.countryCodeText}>🇮🇳 +91</Text>
-            </View>
-            <TextInput
-              style={styles.phoneInput}
-              placeholder="10-digit number"
-              placeholderTextColor={COLORS.textMuted}
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              maxLength={10}
-            />
-          </View>
-        ) : (
-          <View style={styles.otpRow}>
-            {otp.map((digit, i) => (
-              <TextInput
-                key={i}
-                ref={(ref) => (otpRefs.current[i] = ref)}
-                style={[styles.otpBox, digit && styles.otpBoxFilled]}
-                value={digit}
-                onChangeText={(v) => handleOTPChange(v, i)}
-                keyboardType="number-pad"
-                maxLength={1}
-                textAlign="center"
-              />
-            ))}
-          </View>
-        )}
-
-        <TouchableOpacity
-          style={styles.actionBtn}
-          onPress={step === 'phone' ? handleSendOTP : handleVerifyOTP}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.actionBtnText}>{step === 'phone' ? 'Send OTP' : 'Verify & Login'}</Text>
-          )}
+      <View style={styles.responsiveWrapper}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => step === 'otp' ? setStep('phone') : navigation.goBack()}>
+          <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
         </TouchableOpacity>
 
-        {step === 'otp' && (
+        <View style={styles.content}>
+          <Text style={styles.icon}>{step === 'phone' ? '📱' : '🔐'}</Text>
+          <Text style={styles.title}>{step === 'phone' ? 'Phone Login' : 'Verify OTP'}</Text>
+          <Text style={styles.subtitle}>
+            {step === 'phone'
+              ? 'Enter your phone number to receive an OTP'
+              : `OTP sent to +91 ${phone}`}
+          </Text>
+
+          {step === 'phone' ? (
+            <View style={styles.phoneRow}>
+              <View style={styles.countryCode}>
+                <Text style={styles.countryCodeText}>🇮🇳 +91</Text>
+              </View>
+              <TextInput
+                style={styles.phoneInput}
+                placeholder="10-digit number"
+                placeholderTextColor={COLORS.textMuted}
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                maxLength={10}
+              />
+            </View>
+          ) : (
+            <View style={styles.otpRow}>
+              {otp.map((digit, i) => (
+                <TextInput
+                  key={i}
+                  ref={(ref) => (otpRefs.current[i] = ref)}
+                  style={[styles.otpBox, digit && styles.otpBoxFilled]}
+                  value={digit}
+                  onChangeText={(v) => handleOTPChange(v, i)}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  textAlign="center"
+                />
+              ))}
+            </View>
+          )}
+
           <TouchableOpacity
-            style={styles.resendBtn}
-            onPress={handleSendOTP}
-            disabled={resendTimer > 0}
+            style={styles.actionBtn}
+            onPress={step === 'phone' ? handleSendOTP : handleVerifyOTP}
+            disabled={loading}
           >
-            <Text style={[styles.resendText, resendTimer > 0 && styles.resendTextDisabled]}>
-              {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
-            </Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.actionBtnText}>{step === 'phone' ? 'Send OTP' : 'Verify & Login'}</Text>
+            )}
           </TouchableOpacity>
-        )}
+
+          {step === 'otp' && (
+            <TouchableOpacity
+              style={styles.resendBtn}
+              onPress={handleSendOTP}
+              disabled={resendTimer > 0}
+            >
+              <Text style={[styles.resendText, resendTimer > 0 && styles.resendTextDisabled]}>
+                {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg, paddingHorizontal: SPACING.base },
+  container: { flex: 1, backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' },
+  responsiveWrapper: { flex: 1, width: '100%', maxWidth: 480, paddingHorizontal: SPACING.base },
   backBtn: { marginTop: 60, marginBottom: SPACING.lg, width: 40 },
   content: { flex: 1, paddingTop: SPACING['2xl'] },
 
