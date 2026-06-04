@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Expo caches & build outputs
+.expo/
+**/web-build/
+**/dist/
+**/.expo-shared/
+**/npm-debug.log*
+**/yarn-error.log*
+**/.yarn/
+
+# Environments & secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env
+**/.env.*
+
+# Native iOS/Android builds and locks
+**/ios/Pods/
+**/ios/build/
+**/.gradle/
+**/android/app/build/
+**/android/build/
+**/*.xcworkspace/
+**/*.xcodeproj/
+
+# OS/System files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Project-specific uploads/cache
+server/uploads/
