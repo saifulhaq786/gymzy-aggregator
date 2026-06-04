@@ -1,16 +1,25 @@
+import { Platform } from 'react-native';
 import axios from 'axios';
 import SecureStore from '../utils/secureStore';
 import Constants from 'expo-constants';
 
 let BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'http://localhost:5001/api';
 
-// Dynamically replace localhost with the host computer's IP address when running on a physical device in Expo Go
-if (__DEV__) {
-  const hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.debuggerHost;
-  if (hostUri) {
-    const host = hostUri.split(':')[0];
-    if (host && host !== 'localhost' && host !== '127.0.0.1') {
-      BASE_URL = `http://${host}:5001/api`;
+if (Platform.OS === 'web') {
+  if (typeof window !== 'undefined' && window.location) {
+    const hostname = window.location.hostname;
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      BASE_URL = 'https://gymzy-aggregator.onrender.com/api';
+    }
+  }
+} else {
+  if (__DEV__) {
+    const hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.debuggerHost;
+    if (hostUri) {
+      const host = hostUri.split(':')[0];
+      if (host && host !== 'localhost' && host !== '127.0.0.1') {
+        BASE_URL = `http://${host}:5001/api`;
+      }
     }
   }
 }
