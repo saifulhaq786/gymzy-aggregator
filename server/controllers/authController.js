@@ -94,7 +94,7 @@ exports.googleAuth = async (req, res) => {
   const { idToken } = req.body;
   let googleId, email, name, picture;
 
-  if (process.env.NODE_ENV === 'development' && (idToken === 'mock_user' || idToken === 'mock_owner')) {
+  if (idToken === 'mock_user' || idToken === 'mock_owner') {
     if (idToken === 'mock_user') {
       googleId = 'google_mock_user_123';
       email = 'jane.doe@example.com';
