@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
+import SecureStore from '../utils/secureStore';
 import Constants from 'expo-constants';
 
 let BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'http://localhost:5001/api';

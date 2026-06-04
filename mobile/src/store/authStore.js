@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import * as SecureStore from 'expo-secure-store';
+import SecureStore from '../utils/secureStore';
 import { authAPI } from '../api';
 
 const useAuthStore = create((set, get) => ({
