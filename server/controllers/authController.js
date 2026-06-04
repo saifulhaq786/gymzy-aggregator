@@ -178,11 +178,8 @@ exports.sendOTP = async (req, res) => {
   // TODO: Send via Twilio/MSG91
   console.log(`📱 OTP for ${phone}: ${otp}`); // Remove in production
 
-  // In development, return OTP directly for testing
-  const response = { success: true, message: 'OTP sent successfully.' };
-  if (process.env.NODE_ENV === 'development') {
-    response.otp = otp; // REMOVE IN PRODUCTION
-  }
+  // Return OTP directly in response for demo preview testing
+  const response = { success: true, message: 'OTP sent successfully.', otp };
 
   res.json(response);
 };
