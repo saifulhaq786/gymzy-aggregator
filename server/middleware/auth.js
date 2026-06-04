@@ -16,7 +16,7 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'gymzy_jwt_default_secret_786');
     const user = await User.findById(decoded.id).select('-password');
 
     if (!user) {
@@ -60,7 +60,7 @@ const optionalAuth = async (req, res, next) => {
   if (req.headers.authorization?.startsWith('Bearer ')) {
     token = req.headers.authorization.split(' ')[1];
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'gymzy_jwt_default_secret_786');
       req.user = await User.findById(decoded.id).select('-password');
     } catch {
       req.user = null;

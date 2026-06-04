@@ -6,10 +6,10 @@ const User = require('../models/User');
 // ── Token Helpers ─────────────────────────────────────────────────────────────
 
 const generateAccessToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '15m' });
+  jwt.sign({ id }, process.env.JWT_SECRET || 'gymzy_jwt_default_secret_786', { expiresIn: process.env.JWT_EXPIRES_IN || '15m' });
 
 const generateRefreshToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' });
+  jwt.sign({ id }, process.env.JWT_REFRESH_SECRET || 'gymzy_jwt_default_refresh_secret_786', { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' });
 
 const sendTokens = async (user, statusCode, res) => {
   const accessToken = generateAccessToken(user._id);
