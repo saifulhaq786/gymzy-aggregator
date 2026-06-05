@@ -245,7 +245,8 @@ exports.logout = async (req, res) => {
  * GET /api/auth/me
  */
 exports.getMe = async (req, res) => {
-  const user = await User.findById(req.user._id).populate('activeSubscription');
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
   res.json({ success: true, user });
 };
 

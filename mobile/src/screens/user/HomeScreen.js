@@ -12,37 +12,41 @@ import { COLORS, SPACING, RADIUS, FONTS } from '../../constants/theme';
 import useAuthStore from '../../store/authStore';
 import GymCard from '../../components/gym/GymCard';
 
-// Category tiles — like Swiggy cuisine categories
-const CATEGORIES = [
-  { key: 'All', emoji: '🏋️', label: 'All' },
-  { key: 'Open Now', emoji: '🟢', label: 'Open Now' },
-  { key: 'Top Rated', emoji: '⭐', label: 'Top Rated' },
-  { key: 'Budget', emoji: '💸', label: 'Budget' },
-  { key: 'Premium', emoji: '💎', label: 'Premium' },
-  { key: 'Yoga', emoji: '🧘', label: 'Yoga' },
-  { key: '24/7', emoji: '🌙', label: '24 / 7' },
+const FILTERS = [
+  { key: 'All',       label: 'All',        icon: 'view-grid-outline' },
+  { key: 'Open Now',  label: 'Open now',   icon: 'clock-outline' },
+  { key: 'Top Rated', label: 'Top rated',  icon: 'star-outline' },
+  { key: 'Budget',    label: 'Budget',     icon: 'tag-outline' },
+  { key: 'Premium',   label: 'Premium',    icon: 'diamond-outline' },
+  { key: 'Yoga',      label: 'Yoga',       icon: 'yoga' },
+  { key: '24/7',      label: '24 / 7',     icon: 'hours-24' },
 ];
 
 const HomeScreen = ({ navigation }) => {
   const { user } = useAuthStore();
-  const [gyms, setGyms] = useState([]);
+  const [gyms, setGyms]         = useState([]);
   const [featured, setFeatured] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]   = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
 
-  const fetchNearbyGyms = useCallback(async (loc) => {
+  const fetchGyms = useCallback(async (loc) => {
     if (!loc) return;
     try {
-      const { data } = await gymAPI.getNearby({ lat: loc.coords.latitude, lng: loc.coords.longitude, radius: 10000 });
-      setGyms(data.gyms || []);
-      setFeatured((data.gyms || []).filter(g => g.isFeatured));
-    } catch (err) {
-      console.error('Gyms fetch error:', err.message);
+      const { data } = await gymAPI.getNearby({
+        lat: loc.coords.latitude,
+        lng: loc.coords.longitude,
+        radius: 10000,
+      });
+      const list = data.gyms || [];
+      setGyms(list);
+      setFeatured(list.filter(g => g.isFeatured));
+    } catch (e) {
+      console.error('Gyms:', e.message);
     }
   }, []);
 
-  const getLocation = useCallback(async () => {
+  const getLoc = useCallback(async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') return null;
     return Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
@@ -51,43 +55,37 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const loc = await getLocation();
-      await fetchNearbyGyms(loc);
+      const loc = await getLoc();
+      await fetchGyms(loc);
       setLoading(false);
     })();
   }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    const loc = await getLocation();
-    await fetchNearbyGyms(loc);
+    await fetchGyms(await getLoc());
     setRefreshing(false);
   }, []);
 
   const filtered = gyms.filter(g => {
-    if (activeFilter === 'Open Now') return g.isOpenNow;
+    if (activeFilter === 'Open Now')  return g.isOpenNow;
     if (activeFilter === 'Top Rated') return g.rating >= 4.5;
-    if (activeFilter === 'Budget') return g.tags?.includes('budget');
-    if (activeFilter === 'Premium') return g.tags?.includes('premium');
-    if (activeFilter === 'Yoga') return g.facilities?.includes('Yoga Studio');
-    if (activeFilter === '24/7') return g.tags?.includes('24/7');
+    if (activeFilter === 'Budget')    return g.tags?.includes('budget');
+    if (activeFilter === 'Premium')   return g.tags?.includes('premium');
+    if (activeFilter === 'Yoga')      return g.facilities?.includes('Yoga Studio');
+    if (activeFilter === '24/7')      return g.tags?.includes('24/7');
     return true;
   });
 
-  const getHour = () => {
-    const h = new Date().getHours();
-    if (h < 12) return 'Morning';
-    if (h < 17) return 'Afternoon';
-    return 'Evening';
-  };
-
-  const firstName = user?.name?.split(' ')[0] || 'Athlete';
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = user?.name?.split(' ')[0] || 'there';
 
   if (loading) return (
-    <View style={s.loadScreen}>
+    <View style={s.loader}>
       <StatusBar barStyle="light-content" />
       <ActivityIndicator color={COLORS.primary} size="large" />
-      <Text style={s.loadText}>Finding gyms near you...</Text>
+      <Text style={s.loaderText}>Finding gyms near you</Text>
     </View>
   );
 
@@ -95,68 +93,62 @@ const HomeScreen = ({ navigation }) => {
     <View>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
 
-      {/* Top bar */}
+      {/* ── Top bar ─────────────────────────────────────── */}
       <View style={s.topBar}>
-        <View style={s.locationRow}>
-          <MaterialCommunityIcons name="map-marker" size={16} color={COLORS.primary} />
-          <Text style={s.locationCity}>Your area</Text>
-          <MaterialCommunityIcons name="chevron-down" size={16} color="#aaa" />
+        <View>
+          <Text style={s.greetingText}>{greeting}</Text>
+          <Text style={s.nameText}>{firstName}</Text>
         </View>
-        <TouchableOpacity style={s.iconBtn}>
-          <MaterialCommunityIcons name="bell-outline" size={21} color="#fff" />
-        </TouchableOpacity>
+        <View style={s.topActions}>
+          <TouchableOpacity style={s.topBtn} onPress={() => navigation.navigate('Search')}>
+            <MaterialCommunityIcons name="magnify" size={22} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={s.topBtn}>
+            <MaterialCommunityIcons name="bell-outline" size={22} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Hero greeting — large, editorial */}
-      <View style={s.hero}>
-        <Text style={s.heroGreeting}>Good {getHour()},</Text>
-        <Text style={s.heroName}>{firstName}</Text>
-      </View>
-
-      {/* Search — tappable fake input like Swiggy */}
-      <TouchableOpacity style={s.searchBar} onPress={() => navigation.navigate('Search')} activeOpacity={0.9}>
-        <MaterialCommunityIcons name="magnify" size={20} color="#666" />
-        <Text style={s.searchText}>Search gyms, trainers, classes...</Text>
+      {/* ── Location bar ────────────────────────────────── */}
+      <TouchableOpacity style={s.locationBar} activeOpacity={0.8}>
+        <MaterialCommunityIcons name="map-marker-outline" size={16} color={COLORS.primary} />
+        <Text style={s.locationText}>Showing gyms near your location</Text>
+        <MaterialCommunityIcons name="chevron-right" size={16} color="#444" />
       </TouchableOpacity>
 
-      {/* Offer strip — like Zomato's gold/free delivery banner */}
-      <View style={s.offerStrip}>
-        <LinearGradient colors={['#1A2400', '#0F1800']} style={s.offerGrad} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-          <Text style={s.offerEmoji}>⚡</Text>
-          <Text style={s.offerText}>First booking 20% off · Use code </Text>
-          <Text style={s.offerCode}>GYMZY20</Text>
-        </LinearGradient>
-      </View>
-
-      {/* Featured row */}
+      {/* ── Featured carousel ───────────────────────────── */}
       {featured.length > 0 && (
         <View style={s.section}>
-          <View style={s.sectionRow}>
+          <View style={s.sectionHeader}>
             <Text style={s.sectionTitle}>Featured clubs</Text>
-            <TouchableOpacity><Text style={s.seeAll}>See all</Text></TouchableOpacity>
+            <TouchableOpacity><Text style={s.sectionLink}>See all</Text></TouchableOpacity>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: SPACING.base }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingLeft: SPACING.base, gap: SPACING.sm }}
+          >
             {featured.map((gym) => (
               <TouchableOpacity
                 key={gym._id}
                 style={s.featCard}
                 onPress={() => navigation.navigate('GymDetail', { gymId: gym._id })}
-                activeOpacity={0.92}
+                activeOpacity={0.9}
               >
                 <Image
                   source={{ uri: gym.coverImage || gym.images?.[0] || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80' }}
                   style={s.featImg}
                   resizeMode="cover"
                 />
-                <LinearGradient colors={['transparent', 'rgba(0,0,0,0.85)']} style={s.featScrim} />
+                <LinearGradient colors={['transparent', 'rgba(0,0,0,0.82)']} style={s.featScrim} />
                 {gym.isFeatured && (
-                  <View style={s.featTag}>
-                    <Text style={s.featTagText}>⚡ TOP PICK</Text>
+                  <View style={s.featBadge}>
+                    <Text style={s.featBadgeText}>TOP PICK</Text>
                   </View>
                 )}
-                <View style={s.featInfo}>
+                <View style={s.featBottom}>
                   <Text style={s.featName} numberOfLines={1}>{gym.name}</Text>
-                  <Text style={s.featMeta}>
+                  <Text style={s.featSub}>
                     {gym.rating ? `★ ${gym.rating.toFixed(1)}` : ''}
                     {gym.distance ? `  ·  ${(gym.distance / 1000).toFixed(1)} km` : ''}
                   </Text>
@@ -167,34 +159,40 @@ const HomeScreen = ({ navigation }) => {
         </View>
       )}
 
-      {/* Category filter — emoji tiles like Swiggy */}
-      <View style={s.section}>
-        <Text style={s.sectionTitle}>What are you looking for?</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.catRow}>
-          {CATEGORIES.map((c) => {
-            const active = activeFilter === c.key;
-            return (
-              <TouchableOpacity
-                key={c.key}
-                style={[s.catTile, active && s.catTileActive]}
-                onPress={() => setActiveFilter(c.key)}
-                activeOpacity={0.8}
-              >
-                <Text style={s.catEmoji}>{c.emoji}</Text>
-                <Text style={[s.catLabel, active && s.catLabelActive]}>{c.label}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+      {/* ── Filter chips ────────────────────────────────── */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={s.filterRow}
+      >
+        {FILTERS.map(f => {
+          const active = activeFilter === f.key;
+          return (
+            <TouchableOpacity
+              key={f.key}
+              style={[s.chip, active && s.chipActive]}
+              onPress={() => setActiveFilter(f.key)}
+              activeOpacity={0.8}
+            >
+              <MaterialCommunityIcons
+                name={f.icon}
+                size={14}
+                color={active ? '#000' : '#666'}
+              />
+              <Text style={[s.chipText, active && s.chipTextActive]}>{f.label}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
 
-      {/* Section header for list */}
-      <View style={s.sectionRow}>
+      {/* ── Section heading ──────────────────────────────── */}
+      <View style={s.sectionHeader}>
         <Text style={s.sectionTitle}>
           {activeFilter === 'All' ? 'Clubs near you' : activeFilter}
+          <Text style={s.countText}>  {filtered.length} results</Text>
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Explore')}>
-          <Text style={s.seeAll}>Map view</Text>
+          <Text style={s.sectionLink}>Map view</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -204,7 +202,7 @@ const HomeScreen = ({ navigation }) => {
     <View style={s.root}>
       <FlatList
         data={filtered}
-        keyExtractor={(item) => item._id}
+        keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
         ListHeaderComponent={Header}
@@ -217,96 +215,98 @@ const HomeScreen = ({ navigation }) => {
         )}
         ListEmptyComponent={() => (
           <View style={s.empty}>
-            <Text style={s.emptyEmoji}>🏋️</Text>
-            <Text style={s.emptyTitle}>No gyms found</Text>
-            <Text style={s.emptySub}>Try a different filter or check back later</Text>
+            <MaterialCommunityIcons name="map-search-outline" size={48} color="#333" />
+            <Text style={s.emptyTitle}>No clubs found</Text>
+            <Text style={s.emptySub}>Try a different filter</Text>
           </View>
         )}
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{ paddingBottom: 110 }}
       />
     </View>
   );
 };
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#000' },
+  root:       { flex: 1, backgroundColor: '#000' },
+  loader:     { flex: 1, backgroundColor: '#000', alignItems: 'center', justifyContent: 'center' },
+  loaderText: { color: '#555', marginTop: SPACING.md, fontSize: FONTS.sizes.base, fontWeight: '500' },
 
-  loadScreen: { flex: 1, backgroundColor: '#000', alignItems: 'center', justifyContent: 'center' },
-  loadText: { color: '#555', marginTop: SPACING.md, fontSize: FONTS.sizes.base },
-
-  // Top bar — like Zomato's delivery location selector
+  /* Top bar */
   topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    paddingHorizontal: SPACING.base,
+    paddingTop: Platform.OS === 'ios' ? 58 : 36,
+    paddingBottom: SPACING.md,
+    backgroundColor: '#000',
+  },
+  greetingText: { fontSize: FONTS.sizes.sm,  color: '#555', fontWeight: '400', marginBottom: 2 },
+  nameText:     { fontSize: FONTS.sizes['2xl'], color: '#fff', fontWeight: '800', letterSpacing: -0.5 },
+  topActions:   { flexDirection: 'row', gap: SPACING.xs },
+  topBtn: {
+    width: 40, height: 40,
+    backgroundColor: '#111',
+    borderRadius: RADIUS.md,
+    alignItems: 'center', justifyContent: 'center',
+  },
+
+  /* Location bar */
+  locationBar: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: SPACING.base, paddingVertical: SPACING.xs,
+    marginBottom: SPACING.sm,
+  },
+  locationText: { flex: 1, color: '#555', fontSize: FONTS.sizes.sm, fontWeight: '400' },
+
+  /* Section */
+  section:       { marginBottom: SPACING.md },
+  sectionHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: SPACING.base,
-    paddingTop: Platform.OS === 'ios' ? 54 : 32,
     paddingBottom: SPACING.sm,
+    paddingTop: SPACING.xs,
   },
-  locationRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  locationCity: { color: '#fff', fontSize: FONTS.sizes.base, fontWeight: '700' },
-  iconBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  sectionTitle: { fontSize: FONTS.sizes.lg, fontWeight: '700', color: '#fff', letterSpacing: -0.2 },
+  countText:    { fontSize: FONTS.sizes.sm, color: '#444', fontWeight: '400' },
+  sectionLink:  { fontSize: FONTS.sizes.sm, color: COLORS.primary, fontWeight: '600' },
 
-  // Hero — editorial, not boxed
-  hero: { paddingHorizontal: SPACING.base, paddingBottom: SPACING.lg },
-  heroGreeting: { fontSize: FONTS.sizes.base, color: '#666', fontWeight: '400', marginBottom: 2 },
-  heroName: { fontSize: 32, fontWeight: '900', color: '#fff', letterSpacing: -1 },
-
-  // Search
-  searchBar: {
-    flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
-    backgroundColor: '#111', borderRadius: RADIUS.lg,
-    marginHorizontal: SPACING.base, marginBottom: SPACING.md,
-    paddingHorizontal: SPACING.md, height: 50,
-  },
-  searchText: { color: '#555', fontSize: FONTS.sizes.base },
-
-  // Offer strip
-  offerStrip: { marginHorizontal: SPACING.base, borderRadius: RADIUS.md, overflow: 'hidden', marginBottom: SPACING.lg },
-  offerGrad: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.md, paddingVertical: 10 },
-  offerEmoji: { fontSize: 16, marginRight: 6 },
-  offerText: { color: '#aaa', fontSize: FONTS.sizes.sm, fontWeight: '500' },
-  offerCode: { color: COLORS.primary, fontSize: FONTS.sizes.sm, fontWeight: '800' },
-
-  // Section
-  section: { marginBottom: SPACING.md },
-  sectionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: SPACING.base, marginBottom: SPACING.sm },
-  sectionTitle: { fontSize: FONTS.sizes.lg, fontWeight: '700', color: '#fff', letterSpacing: -0.3 },
-  seeAll: { fontSize: FONTS.sizes.sm, color: COLORS.primary, fontWeight: '700' },
-
-  // Featured cards
+  /* Featured */
   featCard: {
-    width: 240, height: 150, borderRadius: RADIUS.xl,
-    overflow: 'hidden', marginRight: SPACING.md, position: 'relative',
+    width: 230, height: 145,
+    borderRadius: RADIUS.xl,
+    overflow: 'hidden',
+    position: 'relative',
   },
-  featImg: { width: '100%', height: '100%' },
-  featScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 90 },
-  featTag: {
+  featImg:   { width: '100%', height: '100%' },
+  featScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 80 },
+  featBadge: {
     position: 'absolute', top: SPACING.sm, left: SPACING.sm,
     backgroundColor: COLORS.primary, borderRadius: RADIUS.xs,
     paddingHorizontal: 7, paddingVertical: 3,
   },
-  featTagText: { color: '#000', fontSize: 9, fontWeight: '900', letterSpacing: 0.5 },
-  featInfo: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: SPACING.sm },
-  featName: { color: '#fff', fontSize: FONTS.sizes.base, fontWeight: '800', marginBottom: 2 },
-  featMeta: { color: 'rgba(255,255,255,0.6)', fontSize: FONTS.sizes.xs, fontWeight: '500' },
+  featBadgeText: { color: '#000', fontSize: 9, fontWeight: '900', letterSpacing: 0.6 },
+  featBottom: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: SPACING.sm },
+  featName:   { color: '#fff', fontSize: FONTS.sizes.base, fontWeight: '700', marginBottom: 2 },
+  featSub:    { color: 'rgba(255,255,255,0.55)', fontSize: FONTS.sizes.xs },
 
-  // Category tiles
-  catRow: { paddingHorizontal: SPACING.base, gap: SPACING.sm },
-  catTile: {
-    alignItems: 'center',
-    backgroundColor: '#111', borderRadius: RADIUS.lg,
-    paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm + 2,
-    minWidth: 68,
+  /* Filter chips */
+  filterRow: { paddingHorizontal: SPACING.base, paddingVertical: SPACING.sm, gap: SPACING.xs },
+  chip: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: 8,
+    backgroundColor: '#111',
+    borderRadius: RADIUS.full,
   },
-  catTileActive: { backgroundColor: '#1A2400' },
-  catEmoji: { fontSize: 22, marginBottom: 4 },
-  catLabel: { color: '#666', fontSize: 11, fontWeight: '600', textAlign: 'center' },
-  catLabelActive: { color: COLORS.primary },
+  chipActive:     { backgroundColor: COLORS.primary },
+  chipText:       { color: '#666', fontSize: FONTS.sizes.sm, fontWeight: '600' },
+  chipTextActive: { color: '#000', fontWeight: '700' },
 
-  // Empty
-  empty: { alignItems: 'center', paddingTop: 60 },
-  emptyEmoji: { fontSize: 48, marginBottom: SPACING.md },
-  emptyTitle: { fontSize: FONTS.sizes.xl, fontWeight: '800', color: '#fff', marginBottom: SPACING.xs },
-  emptySub: { fontSize: FONTS.sizes.base, color: '#555', textAlign: 'center' },
+  /* Empty */
+  empty:      { alignItems: 'center', paddingTop: 60, paddingHorizontal: SPACING.xl },
+  emptyTitle: { fontSize: FONTS.sizes.xl, fontWeight: '700', color: '#fff', marginTop: SPACING.md },
+  emptySub:   { fontSize: FONTS.sizes.base, color: '#555', marginTop: SPACING.xs },
 });
 
 export default HomeScreen;
