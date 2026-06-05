@@ -59,11 +59,7 @@ const userSchema = new mongoose.Schema(
       address: String,
       city: String,
     },
-    activeSubscription: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Subscription',
-      default: null,
-    },
+    // activeSubscription: Phase 2 — universal gym pass (not yet implemented)
     isVerified: {
       type: Boolean,
       default: false,
