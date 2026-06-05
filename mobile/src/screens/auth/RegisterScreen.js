@@ -1,241 +1,217 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
-  ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator,
-  StatusBar,
+  ScrollView, KeyboardAvoidingView, Platform, Alert,
+  ActivityIndicator, StatusBar, Dimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useAuthStore from '../../store/authStore';
-import { COLORS, SPACING, RADIUS, FONTS, SHADOWS } from '../../constants/theme';
+import { COLORS, SPACING, RADIUS, FONTS } from '../../constants/theme';
 
-const ROLES = [
-  {
-    key: 'user',
-    label: 'Gym Member',
-    desc: 'Find and book gyms near you',
-    icon: 'run-fast',
-  },
-  {
-    key: 'gym_owner',
-    label: 'Gym Partner',
-    desc: 'List and manage your facility',
-    icon: 'store-outline',
-  },
-];
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const InputField = ({ icon, placeholder, value, onChangeText, secureTextEntry, keyboardType, autoCapitalize, rightElement, focused, onFocus, onBlur }) => (
+  <View style={[s.inputWrap, focused && s.inputFocused]}>
+    <MaterialCommunityIcons name={icon} size={18} color={focused ? COLORS.primary : '#555'} />
+    <TextInput
+      style={s.input}
+      placeholder={placeholder}
+      placeholderTextColor="#444"
+      value={value}
+      onChangeText={onChangeText}
+      secureTextEntry={secureTextEntry}
+      keyboardType={keyboardType || 'default'}
+      autoCapitalize={autoCapitalize || 'none'}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+    {rightElement}
+  </View>
+);
 
 const RegisterScreen = ({ navigation }) => {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
+  const [focused, setFocused] = useState(null);
   const { register } = useAuthStore();
 
-  const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
+  const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
   const handleRegister = async () => {
-    if (!form.name || !form.email || !form.password) return Alert.alert('Missing Fields', 'All fields are required.');
-    if (form.password.length < 6) return Alert.alert('Weak Password', 'Password must be at least 6 characters.');
+    if (!form.name || !form.email || !form.password) return Alert.alert('', 'All fields are required.');
+    if (form.password.length < 6) return Alert.alert('', 'Password must be at least 6 characters.');
     setLoading(true);
-    try {
-      await register(form);
-    } catch (err) {
-      Alert.alert('Registration Failed', err.response?.data?.message || 'Something went wrong');
-    } finally {
-      setLoading(false);
-    }
+    try { await register(form); }
+    catch (err) { Alert.alert('Error', err.response?.data?.message || 'Something went wrong'); }
+    finally { setLoading(false); }
   };
 
-  const FIELDS = [
-    { key: 'name', label: 'FULL NAME', icon: 'account-outline', placeholder: 'Your full name', type: 'default', caps: 'words' },
-    { key: 'email', label: 'EMAIL', icon: 'email-outline', placeholder: 'you@example.com', type: 'email-address', caps: 'none' },
-  ];
-
   return (
-    <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+    <View style={s.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#000" />
 
-        {/* Header */}
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons name="arrow-left" size={22} color={COLORS.textPrimary} />
-        </TouchableOpacity>
+      {/* Back nav */}
+      <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()}>
+        <MaterialCommunityIcons name="arrow-left" size={22} color="#fff" />
+      </TouchableOpacity>
 
-        <Text style={styles.heading}>Create account</Text>
-        <Text style={styles.subheading}>Join thousands training smarter with Gymzy</Text>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
 
-        {/* Role Toggle */}
-        <View style={styles.roleSection}>
-          <Text style={styles.sectionLabel}>I AM A...</Text>
-          <View style={styles.roleRow}>
-            {ROLES.map((r) => {
+          {/* Header — no card wrapper */}
+          <Text style={s.heading}>Create{'\n'}account</Text>
+          <Text style={s.sub}>Join thousands training smarter</Text>
+
+          {/* Role selector — two full-width option rows, not small cards */}
+          <View style={s.roleSection}>
+            {[
+              { key: 'user', label: 'I want to find gyms', sub: 'Book clubs, track workouts', icon: 'run' },
+              { key: 'gym_owner', label: 'I own a gym', sub: 'List and manage my facility', icon: 'store-outline' },
+            ].map((r) => {
               const active = form.role === r.key;
               return (
                 <TouchableOpacity
                   key={r.key}
-                  style={[styles.roleCard, active && styles.roleCardActive]}
+                  style={[s.roleRow, active && s.roleRowActive]}
                   onPress={() => update('role', r.key)}
-                  activeOpacity={0.8}
+                  activeOpacity={0.85}
                 >
-                  <MaterialCommunityIcons
-                    name={r.icon}
-                    size={22}
-                    color={active ? '#000' : COLORS.textMuted}
-                    style={{ marginBottom: 8 }}
-                  />
-                  <Text style={[styles.roleLabel, active && styles.roleLabelActive]}>{r.label}</Text>
-                  <Text style={[styles.roleDesc, active && styles.roleDescActive]}>{r.desc}</Text>
-                  {active && (
-                    <View style={styles.roleCheck}>
-                      <MaterialCommunityIcons name="check" size={12} color="#000" />
-                    </View>
-                  )}
+                  <View style={[s.roleIcon, active && s.roleIconActive]}>
+                    <MaterialCommunityIcons name={r.icon} size={20} color={active ? '#000' : '#666'} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.roleLabel, active && s.roleLabelActive]}>{r.label}</Text>
+                    <Text style={s.roleSub}>{r.sub}</Text>
+                  </View>
+                  <View style={[s.radioOuter, active && s.radioOuterActive]}>
+                    {active && <View style={s.radioInner} />}
+                  </View>
                 </TouchableOpacity>
               );
             })}
           </View>
-        </View>
 
-        {/* Text Inputs */}
-        <View style={styles.formSection}>
-          {FIELDS.map(({ key, label, icon, placeholder, type, caps }) => (
-            <View key={key} style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>{label}</Text>
-              <View style={[styles.inputRow, focusedField === key && styles.inputRowFocused]}>
-                <MaterialCommunityIcons
-                  name={icon} size={18}
-                  color={focusedField === key ? COLORS.primary : COLORS.textMuted}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={placeholder}
-                  placeholderTextColor={COLORS.textMuted}
-                  value={form[key]}
-                  onChangeText={(v) => update(key, v)}
-                  keyboardType={type}
-                  autoCapitalize={caps}
-                  onFocus={() => setFocusedField(key)}
-                  onBlur={() => setFocusedField(null)}
-                />
-              </View>
-            </View>
-          ))}
-
-          {/* Password field */}
-          <View style={styles.fieldGroup}>
-            <Text style={styles.fieldLabel}>PASSWORD</Text>
-            <View style={[styles.inputRow, focusedField === 'password' && styles.inputRowFocused]}>
-              <MaterialCommunityIcons
-                name="lock-outline" size={18}
-                color={focusedField === 'password' ? COLORS.primary : COLORS.textMuted}
-              />
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                placeholder="Min. 6 characters"
-                placeholderTextColor={COLORS.textMuted}
-                value={form.password}
-                onChangeText={(v) => update('password', v)}
-                secureTextEntry={!showPassword}
-                onFocus={() => setFocusedField('password')}
-                onBlur={() => setFocusedField(null)}
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <MaterialCommunityIcons
-                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                  size={18} color={COLORS.textMuted}
-                />
+          {/* Fields — no wrapper card */}
+          <InputField
+            icon="account-outline" placeholder="Full name"
+            value={form.name} onChangeText={v => update('name', v)}
+            autoCapitalize="words"
+            focused={focused === 'name'}
+            onFocus={() => setFocused('name')} onBlur={() => setFocused(null)}
+          />
+          <InputField
+            icon="email-outline" placeholder="Email address"
+            value={form.email} onChangeText={v => update('email', v)}
+            keyboardType="email-address"
+            focused={focused === 'email'}
+            onFocus={() => setFocused('email')} onBlur={() => setFocused(null)}
+          />
+          <InputField
+            icon="lock-outline" placeholder="Password (min 6 chars)"
+            value={form.password} onChangeText={v => update('password', v)}
+            secureTextEntry={!showPassword}
+            focused={focused === 'pass'}
+            onFocus={() => setFocused('pass')} onBlur={() => setFocused(null)}
+            rightElement={
+              <TouchableOpacity onPress={() => setShowPassword(v => !v)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                <MaterialCommunityIcons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color="#555" />
               </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+            }
+          />
 
-        {/* CTA */}
-        <TouchableOpacity
-          style={[styles.primaryBtn, loading && { opacity: 0.8 }]}
-          onPress={handleRegister}
-          disabled={loading}
-          activeOpacity={0.85}
-        >
-          {loading ? (
-            <ActivityIndicator color="#000" size="small" />
-          ) : (
-            <Text style={styles.primaryBtnText}>CREATE ACCOUNT</Text>
-          )}
-        </TouchableOpacity>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.footerLink}>Sign in</Text>
+          <TouchableOpacity style={[s.cta, loading && { opacity: 0.8 }]} onPress={handleRegister} disabled={loading} activeOpacity={0.88}>
+            {loading ? <ActivityIndicator color="#000" /> : <Text style={s.ctaText}>Get started</Text>}
           </TouchableOpacity>
-        </View>
 
-        <Text style={styles.termsNote}>
-          By creating an account, you agree to our Terms of Service and Privacy Policy.
-        </Text>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={s.signRow}>
+            <Text style={s.signText}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={s.signLink}>Sign in</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={s.terms}>By continuing you agree to our Terms & Privacy Policy</Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLORS.bg },
-  scroll: { flexGrow: 1, paddingHorizontal: SPACING.xl, paddingTop: Platform.OS === 'ios' ? 60 : 40, paddingBottom: 40, maxWidth: 480, width: '100%', alignSelf: 'center' },
-
+const s = StyleSheet.create({
+  root: { flex: 1, backgroundColor: '#000' },
   backBtn: {
-    width: 40, height: 40, borderRadius: RADIUS.md,
-    backgroundColor: COLORS.bgCard, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: COLORS.border, marginBottom: SPACING.xl,
+    position: 'absolute', top: Platform.OS === 'ios' ? 54 : 34, left: SPACING.xl,
+    zIndex: 10, width: 40, height: 40, alignItems: 'center', justifyContent: 'center',
+  },
+  scroll: {
+    paddingHorizontal: SPACING.xl,
+    paddingTop: Platform.OS === 'ios' ? 110 : 90,
+    paddingBottom: 50,
+    maxWidth: 480, width: '100%', alignSelf: 'center',
   },
 
-  heading: { fontSize: FONTS.sizes['3xl'], fontWeight: '900', color: COLORS.textPrimary, letterSpacing: -0.5, marginBottom: 6 },
-  subheading: { fontSize: FONTS.sizes.base, color: COLORS.textSecondary, marginBottom: SPACING['2xl'], lineHeight: 22 },
+  heading: {
+    fontSize: 44,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -2,
+    lineHeight: 46,
+    marginBottom: SPACING.sm,
+  },
+  sub: { fontSize: FONTS.sizes.base, color: '#555', marginBottom: SPACING['2xl'], fontWeight: '400' },
 
-  roleSection: { marginBottom: SPACING.xl },
-  sectionLabel: { fontSize: FONTS.sizes.xs, fontWeight: '800', color: COLORS.textMuted, letterSpacing: 1.5, marginBottom: SPACING.sm },
-  roleRow: { flexDirection: 'row', gap: SPACING.sm },
-  roleCard: {
-    flex: 1, padding: SPACING.md, borderRadius: RADIUS.lg,
-    backgroundColor: COLORS.bgCard, borderWidth: 1.5, borderColor: COLORS.border,
-    position: 'relative',
+  // Role rows — full width option items like Swiggy address type selector
+  roleSection: { marginBottom: SPACING.xl, gap: SPACING.xs },
+  roleRow: {
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.md,
+    backgroundColor: '#111', borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    borderWidth: 1.5, borderColor: 'transparent',
   },
-  roleCardActive: {
-    backgroundColor: COLORS.primary, borderColor: COLORS.primary,
-    ...SHADOWS.glow,
+  roleRowActive: {
+    borderColor: COLORS.primary,
+    backgroundColor: '#0F1400',
   },
-  roleLabel: { fontSize: FONTS.sizes.base, fontWeight: '800', color: COLORS.textPrimary, marginBottom: 3 },
-  roleLabelActive: { color: '#000' },
-  roleDesc: { fontSize: FONTS.sizes.xs, color: COLORS.textSecondary, lineHeight: 16 },
-  roleDescActive: { color: 'rgba(0,0,0,0.65)' },
-  roleCheck: {
-    position: 'absolute', top: SPACING.sm, right: SPACING.sm,
+  roleIcon: {
+    width: 44, height: 44, borderRadius: RADIUS.md,
+    backgroundColor: '#1A1A1A', alignItems: 'center', justifyContent: 'center',
+  },
+  roleIconActive: { backgroundColor: COLORS.primary },
+  roleLabel: { fontSize: FONTS.sizes.base, fontWeight: '700', color: '#888', marginBottom: 2 },
+  roleLabelActive: { color: '#fff' },
+  roleSub: { fontSize: FONTS.sizes.sm, color: '#444' },
+  radioOuter: {
     width: 20, height: 20, borderRadius: 10,
-    backgroundColor: 'rgba(0,0,0,0.2)', alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: '#333',
+    alignItems: 'center', justifyContent: 'center',
   },
+  radioOuterActive: { borderColor: COLORS.primary },
+  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.primary },
 
-  formSection: { marginBottom: SPACING.lg },
-  fieldGroup: { marginBottom: SPACING.md },
-  fieldLabel: { fontSize: FONTS.sizes.xs, fontWeight: '800', color: COLORS.textMuted, letterSpacing: 1.5, marginBottom: 8 },
-  inputRow: {
+  // Inputs
+  inputWrap: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
-    backgroundColor: COLORS.bgInput, borderRadius: RADIUS.md,
-    borderWidth: 1, borderColor: COLORS.border,
-    paddingHorizontal: SPACING.md, height: 52,
+    backgroundColor: '#111', borderRadius: RADIUS.md,
+    paddingHorizontal: SPACING.md, height: 54,
+    marginBottom: SPACING.sm,
+    borderWidth: 1, borderColor: 'transparent',
   },
-  inputRowFocused: { borderColor: COLORS.primary, backgroundColor: 'rgba(200,255,0,0.03)' },
-  input: { flex: 1, color: COLORS.textPrimary, fontSize: FONTS.sizes.md, fontWeight: '500' },
+  inputFocused: { borderColor: COLORS.primary, backgroundColor: '#0A0A0A' },
+  input: { flex: 1, color: '#fff', fontSize: FONTS.sizes.md, fontWeight: '400' },
 
-  primaryBtn: {
+  cta: {
     backgroundColor: COLORS.primary, borderRadius: RADIUS.md,
     height: 56, alignItems: 'center', justifyContent: 'center',
-    ...SHADOWS.glow, marginBottom: SPACING.xl,
+    marginTop: SPACING.sm, marginBottom: SPACING.xl,
   },
-  primaryBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.base, letterSpacing: 1.5 },
+  ctaText: { color: '#000', fontWeight: '800', fontSize: FONTS.sizes.md, letterSpacing: 0.3 },
 
-  footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: SPACING.lg },
-  footerText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.base },
-  footerLink: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base },
+  signRow: { flexDirection: 'row', justifyContent: 'center', marginBottom: SPACING.xl },
+  signText: { color: '#555', fontSize: FONTS.sizes.base },
+  signLink: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base },
 
-  termsNote: { textAlign: 'center', color: COLORS.textMuted, fontSize: FONTS.sizes.xs, lineHeight: 16 },
+  terms: { textAlign: 'center', color: '#333', fontSize: FONTS.sizes.xs, lineHeight: 16 },
 });
 
 export default RegisterScreen;

@@ -2,193 +2,174 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS, FONTS, SHADOWS } from '../../constants/theme';
+import { COLORS, SPACING, RADIUS, FONTS } from '../../constants/theme';
 
-const GymCard = ({ gym, onPress, horizontal = false }) => {
-  const scaleValue = React.useRef(new Animated.Value(1)).current;
+// Placeholder gym images when no image is available
+const PLACEHOLDER_IMAGES = [
+  'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80',
+  'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&q=80',
+  'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80',
+  'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&q=80',
+];
 
-  const handlePressIn = () =>
-    Animated.spring(scaleValue, { toValue: 0.97, useNativeDriver: true, tension: 150, friction: 8 }).start();
+const GymCard = ({ gym, onPress, index = 0 }) => {
+  const scale = React.useRef(new Animated.Value(1)).current;
 
-  const handlePressOut = () =>
-    Animated.spring(scaleValue, { toValue: 1, useNativeDriver: true, tension: 150, friction: 8 }).start();
+  const onIn = () => Animated.spring(scale, { toValue: 0.975, useNativeDriver: true, tension: 200, friction: 10 }).start();
+  const onOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 200, friction: 10 }).start();
 
-  const formatPrice = (pricing) => {
-    if (pricing?.hourly) return `₹${pricing.hourly}`;
-    if (pricing?.daily) return `₹${pricing.daily}`;
-    return null;
-  };
+  const imageUri = gym.coverImage || gym.images?.[0] || PLACEHOLDER_IMAGES[index % PLACEHOLDER_IMAGES.length];
 
-  const price = formatPrice(gym.pricing);
-  const priceUnit = gym.pricing?.hourly ? '/hr' : '/day';
+  const priceText = gym.pricing?.hourly
+    ? `₹${gym.pricing.hourly}/hr`
+    : gym.pricing?.daily
+    ? `₹${gym.pricing.daily}/day`
+    : null;
 
-  let statusColor = COLORS.success;
+  const isOpen = gym.isOpenNow !== false;
+  const isFull = gym.occupancyPercent >= 100;
+  const isBusy = gym.occupancyPercent >= 80;
+
+  let statusColor = '#22C55E';
   let statusLabel = 'Open';
-  if (!gym.isOpenNow) { statusColor = COLORS.textMuted; statusLabel = 'Closed'; }
-  else if (gym.occupancyPercent >= 100) { statusColor = COLORS.error; statusLabel = 'Full'; }
-  else if (gym.occupancyPercent >= 80) { statusColor = COLORS.warning; statusLabel = 'Busy'; }
+  if (!isOpen) { statusColor = '#555'; statusLabel = 'Closed'; }
+  else if (isFull) { statusColor = '#EF4444'; statusLabel = 'Full'; }
+  else if (isBusy) { statusColor = '#F59E0B'; statusLabel = 'Busy'; }
 
-  const imageUri = gym.coverImage || gym.images?.[0];
+  const rating = gym.rating?.toFixed(1);
+  const reviews = gym.totalReviews;
+  const distance = gym.distance != null ? `${(gym.distance / 1000).toFixed(1)} km` : null;
 
   return (
-    <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+    <Animated.View style={{ transform: [{ scale }] }}>
       <TouchableOpacity
-        style={styles.card}
         onPress={onPress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={onIn}
+        onPressOut={onOut}
         activeOpacity={1}
+        style={s.card}
       >
-        {/* Image Block */}
-        <View style={styles.imageBlock}>
-          {imageUri ? (
-            <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
-          ) : (
-            <View style={styles.imagePlaceholder}>
-              <MaterialCommunityIcons name="dumbbell" size={32} color={COLORS.textMuted} />
-            </View>
-          )}
+        {/* Full-bleed image */}
+        <View style={s.imgBox}>
+          <Image source={{ uri: imageUri }} style={s.img} resizeMode="cover" />
 
-          {/* Gradient overlay for text legibility */}
+          {/* Subtle scrim at bottom for text readability */}
           <LinearGradient
-            colors={['transparent', 'rgba(0,0,0,0.7)']}
-            style={styles.imageGradient}
+            colors={['transparent', 'rgba(0,0,0,0.55)']}
+            style={s.scrim}
           />
 
-          {/* Top-left: Featured badge */}
+          {/* Featured badge — top left */}
           {gym.isFeatured && (
-            <View style={styles.featuredBadge}>
-              <MaterialCommunityIcons name="lightning-bolt" size={11} color="#000" />
-              <Text style={styles.featuredText}>TOP PICK</Text>
+            <View style={s.featuredBadge}>
+              <Text style={s.featuredText}>⚡ Top Pick</Text>
             </View>
           )}
 
-          {/* Top-right: Status indicator */}
-          <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
-
-          {/* Bottom-left overlay: price */}
-          {price && (
-            <View style={styles.priceOverlay}>
-              <Text style={styles.priceValue}>{price}</Text>
-              <Text style={styles.priceUnit}>{priceUnit}</Text>
+          {/* Rating — top right, floating green pill like Swiggy */}
+          {rating && (
+            <View style={[s.ratingBadge, { backgroundColor: statusColor }]}>
+              <Text style={s.ratingText}>★ {rating}</Text>
             </View>
+          )}
+
+          {/* Price bottom-right on image */}
+          {priceText && (
+            <Text style={s.priceOnImage}>{priceText}</Text>
           )}
         </View>
 
-        {/* Content */}
-        <View style={styles.content}>
-          <View style={styles.nameRow}>
-            <Text style={styles.name} numberOfLines={1}>{gym.name}</Text>
-            {gym.rating > 0 && (
-              <View style={styles.ratingPill}>
-                <MaterialCommunityIcons name="star" size={11} color={COLORS.star} />
-                <Text style={styles.ratingText}>{gym.rating.toFixed(1)}</Text>
-              </View>
+        {/* Info below image — NO wrapper card, just plain layout */}
+        <View style={s.info}>
+          {/* Row 1: Name + distance */}
+          <View style={s.row1}>
+            <Text style={s.name} numberOfLines={1}>{gym.name}</Text>
+            {distance && (
+              <Text style={s.dist}>{distance}</Text>
             )}
           </View>
 
-          <View style={styles.locationRow}>
-            <MaterialCommunityIcons name="map-marker-outline" size={13} color={COLORS.textMuted} />
-            <Text style={styles.locationText} numberOfLines={1}>
-              {gym.location?.address || gym.location?.city || 'Location unavailable'}
+          {/* Row 2: location + status */}
+          <View style={s.row2}>
+            <Text style={s.address} numberOfLines={1}>
+              {gym.location?.address || gym.location?.city || 'Location not available'}
             </Text>
-            {gym.distance != null && (
-              <>
-                <Text style={styles.dotSep}>·</Text>
-                <Text style={styles.distanceText}>{(gym.distance / 1000).toFixed(1)} km</Text>
-              </>
-            )}
+            <View style={[s.statusDot, { backgroundColor: statusColor }]} />
+            <Text style={[s.statusText, { color: statusColor }]}>{statusLabel}</Text>
           </View>
 
-          {/* Facility pills */}
+          {/* Row 3: Facilities */}
           {gym.facilities?.length > 0 && (
-            <View style={styles.pillsRow}>
-              {gym.facilities.slice(0, 3).map((f) => (
-                <View key={f} style={styles.pill}>
-                  <Text style={styles.pillText}>{f}</Text>
-                </View>
+            <View style={s.pills}>
+              {gym.facilities.slice(0, 3).map(f => (
+                <Text key={f} style={s.pill}>{f}</Text>
               ))}
               {gym.facilities.length > 3 && (
-                <View style={styles.pill}>
-                  <Text style={styles.pillText}>+{gym.facilities.length - 3}</Text>
-                </View>
+                <Text style={s.pillMore}>+{gym.facilities.length - 3}</Text>
               )}
             </View>
           )}
         </View>
+
+        {/* Hairline separator */}
+        <View style={s.sep} />
       </TouchableOpacity>
     </Animated.View>
   );
 };
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
+  // No border, no bgCard — the card IS the content
   card: {
-    backgroundColor: COLORS.bgCard,
-    borderRadius: RADIUS.xl,
-    marginHorizontal: SPACING.base,
-    marginBottom: SPACING.md,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    ...SHADOWS.md,
+    backgroundColor: '#000',
+    marginBottom: 4,
   },
 
-  imageBlock: { height: 188, position: 'relative' },
-  image: { width: '100%', height: '100%' },
-  imagePlaceholder: {
-    width: '100%', height: '100%',
-    backgroundColor: COLORS.bgElevated,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  imageGradient: {
-    position: 'absolute', bottom: 0, left: 0, right: 0, height: 90,
-  },
+  imgBox: { height: 210, position: 'relative', overflow: 'hidden' },
+  img: { width: '100%', height: '100%' },
+  scrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 80 },
 
   featuredBadge: {
     position: 'absolute', top: SPACING.sm, left: SPACING.sm,
-    flexDirection: 'row', alignItems: 'center', gap: 3,
-    backgroundColor: COLORS.primary, borderRadius: RADIUS.xs,
-    paddingHorizontal: 7, paddingVertical: 4,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.xs,
+    paddingHorizontal: 9, paddingVertical: 4,
   },
-  featuredText: { color: '#000', fontSize: 9, fontWeight: '900', letterSpacing: 0.8 },
+  featuredText: { color: '#000', fontSize: 11, fontWeight: '800' },
 
-  statusDot: {
+  ratingBadge: {
     position: 'absolute', top: SPACING.sm, right: SPACING.sm,
-    width: 10, height: 10, borderRadius: 5,
-    borderWidth: 1.5, borderColor: 'rgba(0,0,0,0.5)',
+    borderRadius: RADIUS.xs,
+    paddingHorizontal: 8, paddingVertical: 4,
+  },
+  ratingText: { color: '#fff', fontSize: 12, fontWeight: '800' },
+
+  priceOnImage: {
+    position: 'absolute', bottom: SPACING.sm, right: SPACING.sm,
+    color: '#fff', fontSize: 15, fontWeight: '900',
+    textShadowColor: 'rgba(0,0,0,0.8)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
   },
 
-  priceOverlay: {
-    position: 'absolute', bottom: SPACING.sm, left: SPACING.sm,
-    flexDirection: 'row', alignItems: 'baseline', gap: 1,
-  },
-  priceValue: { color: '#fff', fontSize: FONTS.sizes.xl, fontWeight: '900' },
-  priceUnit: { color: 'rgba(255,255,255,0.7)', fontSize: FONTS.sizes.xs, fontWeight: '600', marginLeft: 1 },
+  info: { paddingHorizontal: SPACING.base, paddingTop: SPACING.md, paddingBottom: SPACING.sm },
 
-  content: { padding: SPACING.base, paddingTop: SPACING.md },
+  row1: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 },
+  name: { flex: 1, fontSize: 17, fontWeight: '700', color: '#fff', letterSpacing: -0.2 },
+  dist: { color: COLORS.primary, fontSize: FONTS.sizes.sm, fontWeight: '700', marginLeft: SPACING.sm },
 
-  nameRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  name: { flex: 1, fontSize: FONTS.sizes.lg, fontWeight: '800', color: COLORS.textPrimary, letterSpacing: -0.3, marginRight: SPACING.sm },
+  row2: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: SPACING.sm },
+  address: { flex: 1, color: '#666', fontSize: FONTS.sizes.sm, fontWeight: '400' },
+  statusDot: { width: 7, height: 7, borderRadius: 3.5 },
+  statusText: { fontSize: FONTS.sizes.sm, fontWeight: '600' },
 
-  ratingPill: {
-    flexDirection: 'row', alignItems: 'center', gap: 3,
-    backgroundColor: 'rgba(251,191,36,0.12)',
-    borderRadius: RADIUS.xs, paddingHorizontal: 7, paddingVertical: 3,
-  },
-  ratingText: { color: COLORS.star, fontSize: FONTS.sizes.sm, fontWeight: '800' },
-
-  locationRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: SPACING.md },
-  locationText: { flex: 1, color: COLORS.textSecondary, fontSize: FONTS.sizes.sm },
-  dotSep: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm },
-  distanceText: { color: COLORS.primary, fontSize: FONTS.sizes.sm, fontWeight: '700' },
-
-  pillsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 5 },
+  pills: { flexDirection: 'row', gap: 6 },
   pill: {
-    backgroundColor: COLORS.bgElevated,
-    borderRadius: RADIUS.sm, paddingHorizontal: 9, paddingVertical: 4,
-    borderWidth: 1, borderColor: COLORS.borderSubtle,
+    color: '#555', fontSize: 11, fontWeight: '500',
+    backgroundColor: '#111',
+    borderRadius: RADIUS.sm, paddingHorizontal: 8, paddingVertical: 3,
   },
-  pillText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.xs, fontWeight: '600' },
+  pillMore: { color: '#444', fontSize: 11, fontWeight: '500', alignSelf: 'center' },
+
+  sep: { height: 1, backgroundColor: '#111', marginTop: SPACING.xs },
 });
 
 export default GymCard;
