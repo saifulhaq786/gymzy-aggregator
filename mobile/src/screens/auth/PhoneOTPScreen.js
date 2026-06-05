@@ -75,18 +75,24 @@ const PhoneOTPScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <View style={styles.content}>
-          <Text style={styles.icon}>{step === 'phone' ? '📱' : '🔐'}</Text>
-          <Text style={styles.title}>{step === 'phone' ? 'Phone Login' : 'Verify OTP'}</Text>
+          <View style={styles.iconContainer}>
+            <MaterialCommunityIcons 
+              name={step === 'phone' ? 'cellphone' : 'shield-key-outline'} 
+              size={48} 
+              color={COLORS.primary} 
+            />
+          </View>
+          <Text style={styles.title}>{step === 'phone' ? 'PHONE SIGN IN' : 'VERIFY CODE'}</Text>
           <Text style={styles.subtitle}>
             {step === 'phone'
-              ? 'Enter your phone number to receive an OTP'
-              : `OTP sent to +91 ${phone}`}
+              ? 'Enter your phone number to receive a secure access code'
+              : `Enter the code sent to +91 ${phone}`}
           </Text>
 
           {step === 'phone' ? (
             <View style={styles.phoneRow}>
               <View style={styles.countryCode}>
-                <Text style={styles.countryCodeText}>🇮🇳 +91</Text>
+                <Text style={styles.countryCodeText}>+91</Text>
               </View>
               <TextInput
                 style={styles.phoneInput}
@@ -121,9 +127,9 @@ const PhoneOTPScreen = ({ navigation }) => {
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#000" />
             ) : (
-              <Text style={styles.actionBtnText}>{step === 'phone' ? 'Send OTP' : 'Verify & Login'}</Text>
+              <Text style={styles.actionBtnText}>{step === 'phone' ? 'SEND CODE' : 'VERIFY & LOGIN'}</Text>
             )}
           </TouchableOpacity>
 
@@ -134,7 +140,7 @@ const PhoneOTPScreen = ({ navigation }) => {
               disabled={resendTimer > 0}
             >
               <Text style={[styles.resendText, resendTimer > 0 && styles.resendTextDisabled]}>
-                {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+                {resendTimer > 0 ? `Resend code in ${resendTimer}s` : 'Resend code'}
               </Text>
             </TouchableOpacity>
           )}
@@ -148,40 +154,40 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg, alignItems: 'center', justifyContent: 'center' },
   responsiveWrapper: { flex: 1, width: '100%', maxWidth: 480, paddingHorizontal: SPACING.base },
   backBtn: { marginTop: 60, marginBottom: SPACING.lg, width: 40 },
-  content: { flex: 1, paddingTop: SPACING['2xl'] },
+  content: { flex: 1, paddingTop: SPACING['xl'] },
 
-  icon: { fontSize: 48, marginBottom: SPACING.md },
-  title: { fontSize: FONTS.sizes['3xl'], fontWeight: '900', color: COLORS.textPrimary, marginBottom: 8 },
+  iconContainer: { marginBottom: SPACING.md },
+  title: { fontSize: 26, fontWeight: '900', color: COLORS.textPrimary, marginBottom: 8, letterSpacing: -0.5 },
   subtitle: { fontSize: FONTS.sizes.base, color: COLORS.textSecondary, marginBottom: SPACING['2xl'], lineHeight: 22 },
 
   phoneRow: { flexDirection: 'row', gap: SPACING.sm, marginBottom: SPACING.xl },
   countryCode: {
     backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, borderWidth: 1,
-    borderColor: COLORS.border, paddingHorizontal: SPACING.md, justifyContent: 'center',
+    borderColor: 'rgba(255,255,255,0.06)', paddingHorizontal: SPACING.md, justifyContent: 'center',
   },
-  countryCodeText: { color: COLORS.textPrimary, fontSize: FONTS.sizes.md, fontWeight: '600' },
+  countryCodeText: { color: COLORS.textPrimary, fontSize: FONTS.sizes.md, fontWeight: '700' },
   phoneInput: {
     flex: 1, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, borderWidth: 1,
-    borderColor: COLORS.border, paddingHorizontal: SPACING.md, height: 52,
-    color: COLORS.textPrimary, fontSize: FONTS.sizes.xl, fontWeight: '700',
+    borderColor: 'rgba(255,255,255,0.06)', paddingHorizontal: SPACING.md, height: 54,
+    color: COLORS.textPrimary, fontSize: FONTS.sizes.xl, fontWeight: '800',
   },
 
   otpRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: SPACING.xl },
   otpBox: {
-    width: 48, height: 56, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md,
-    borderWidth: 2, borderColor: COLORS.border,
-    color: COLORS.textPrimary, fontSize: FONTS.sizes['2xl'], fontWeight: '800',
+    width: 48, height: 58, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md,
+    borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.06)',
+    color: COLORS.textPrimary, fontSize: FONTS.sizes['2xl'], fontWeight: '850',
   },
   otpBoxFilled: { borderColor: COLORS.primary },
 
   actionBtn: {
-    backgroundColor: COLORS.primary, borderRadius: RADIUS.md, height: 52,
+    backgroundColor: COLORS.primary, borderRadius: RADIUS.md, height: 54,
     alignItems: 'center', justifyContent: 'center', ...SHADOWS.glow,
   },
-  actionBtnText: { color: '#fff', fontWeight: '800', fontSize: FONTS.sizes.md },
+  actionBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.md, letterSpacing: 1 },
 
   resendBtn: { alignItems: 'center', marginTop: SPACING.lg },
-  resendText: { color: COLORS.primary, fontWeight: '600', fontSize: FONTS.sizes.base },
+  resendText: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base },
   resendTextDisabled: { color: COLORS.textMuted },
 });
 

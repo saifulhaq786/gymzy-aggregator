@@ -1,44 +1,44 @@
 // App Color Palette
 export const COLORS = {
   // Primary brand
-  primary: '#FF6B35',       // Energetic orange
-  primaryDark: '#E55A28',
-  primaryLight: '#FF8C5A',
+  primary: '#CAFC07',       // Premium Electric Volt
+  primaryDark: '#94C300',
+  primaryLight: '#DBFF45',
 
   // Accent
-  accent: '#00D4AA',        // Teal green
+  accent: '#00E5FF',        // Electric Cyan/Teal
 
   // Background
-  bg: '#0A0A0A',            // Near black
-  bgCard: '#141414',
-  bgElevated: '#1C1C1C',
-  bgModal: '#242424',
+  bg: '#08090C',            // Deep Obsidian Dark
+  bgCard: '#11141A',        // Slate Card background
+  bgElevated: '#171B26',
+  bgModal: '#1A1E29',
 
   // Text
   textPrimary: '#FFFFFF',
-  textSecondary: '#A0A0A0',
-  textMuted: '#5A5A5A',
+  textSecondary: '#94A3B8', // Cool grey
+  textMuted: '#64748B',
 
   // Status
-  success: '#00C853',
-  warning: '#FFB300',
-  error: '#FF3D3D',
-  info: '#2196F3',
+  success: '#10B981',       // Clean Emerald
+  warning: '#F59E0B',
+  error: '#EF4444',
+  info: '#3B82F6',
 
   // Availability
-  available: '#00C853',
-  almostFull: '#FFB300',
-  full: '#FF3D3D',
+  available: '#10B981',
+  almostFull: '#F59E0B',
+  full: '#EF4444',
 
   // Borders
-  border: '#2A2A2A',
-  borderLight: '#3A3A3A',
+  border: '#1E293B',
+  borderLight: '#334155',
 
   // Rating
   star: '#FFD700',
 
   // Overlay
-  overlay: 'rgba(0,0,0,0.6)',
+  overlay: 'rgba(0,0,0,0.7)',
 };
 
 export const FONTS = {
@@ -93,11 +93,11 @@ export const SHADOWS = {
     elevation: 6,
   },
   glow: {
-    shadowColor: '#FF6B35',
+    shadowColor: '#CAFC07',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 6,
   },
 };
 

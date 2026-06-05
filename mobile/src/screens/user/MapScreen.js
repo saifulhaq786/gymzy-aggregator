@@ -10,12 +10,12 @@ import { COLORS, SPACING, RADIUS, FONTS, SHADOWS } from '../../constants/theme';
 import GymCard from '../../components/gym/GymCard';
 
 const MAP_STYLE = [
-  { elementType: 'geometry', stylers: [{ color: '#1a1a2e' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#8a8a9a' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a2e' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a2a3e' }] },
-  { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#1a1a2e' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0d0d1a' }] },
+  { elementType: 'geometry', stylers: [{ color: '#08090c' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#a0a5b5' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#08090c' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#16171a' }] },
+  { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#08090c' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0c0d12' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
 ];
 
@@ -99,8 +99,8 @@ const MapScreen = ({ navigation }) => {
         <Circle
           center={{ latitude: location.coords.latitude, longitude: location.coords.longitude }}
           radius={radius}
-          fillColor="rgba(255,107,53,0.05)"
-          strokeColor="rgba(255,107,53,0.3)"
+          fillColor="rgba(212,255,0,0.02)"
+          strokeColor="rgba(212,255,0,0.2)"
           strokeWidth={1}
         />
 
@@ -115,7 +115,7 @@ const MapScreen = ({ navigation }) => {
             onPress={() => setSelectedGym(gym)}
           >
             <View style={[styles.marker, selectedGym?._id === gym._id && styles.markerSelected]}>
-              <MaterialCommunityIcons name="dumbbell" size={14} color="#fff" />
+              <MaterialCommunityIcons name="dumbbell" size={14} color="#000" />
             </View>
           </Marker>
         ))}
@@ -123,7 +123,7 @@ const MapScreen = ({ navigation }) => {
 
       {/* Header */}
       <View style={styles.mapHeader}>
-        <Text style={styles.mapTitle}>🗺️ {gyms.length} Gyms Nearby</Text>
+        <Text style={styles.mapTitle}>GYMS NEARBY ({gyms.length})</Text>
         <TouchableOpacity style={styles.centerBtn} onPress={centerOnUser}>
           <MaterialCommunityIcons name="crosshairs-gps" size={20} color={COLORS.primary} />
         </TouchableOpacity>
@@ -138,7 +138,7 @@ const MapScreen = ({ navigation }) => {
             onPress={() => { setRadius(r); fetchGyms(location); }}
           >
             <Text style={[styles.radiusText, radius === r && styles.radiusTextActive]}>
-              {r / 1000}km
+              {r / 1000}KM
             </Text>
           </TouchableOpacity>
         ))}
@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
   mapHeader: {
     position: 'absolute', top: 50, left: SPACING.base, right: SPACING.base,
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    backgroundColor: 'rgba(20,20,20,0.9)', borderRadius: RADIUS.xl,
+    backgroundColor: 'rgba(20,20,20,0.9)', borderRadius: RADIUS.md,
     paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm,
-    borderWidth: 1, borderColor: COLORS.border, ...SHADOWS.md,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', ...SHADOWS.md,
   },
-  mapTitle: { color: COLORS.textPrimary, fontWeight: '800', fontSize: FONTS.sizes.base },
+  mapTitle: { color: COLORS.textPrimary, fontWeight: '950', fontSize: FONTS.sizes.base, letterSpacing: 0.5 },
   centerBtn: {
     width: 36, height: 36, backgroundColor: COLORS.bgElevated,
     borderRadius: 18, alignItems: 'center', justifyContent: 'center',
@@ -185,26 +185,26 @@ const styles = StyleSheet.create({
   },
   radiusChip: {
     paddingHorizontal: SPACING.md, paddingVertical: 6,
-    backgroundColor: 'rgba(20,20,20,0.9)', borderRadius: RADIUS.full,
-    borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: 'rgba(20,20,20,0.9)', borderRadius: RADIUS.md,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
-  radiusChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  radiusText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, fontWeight: '600' },
-  radiusTextActive: { color: '#fff' },
+  radiusChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary, ...SHADOWS.glow },
+  radiusText: { color: COLORS.textSecondary, fontSize: 11, fontWeight: '850', letterSpacing: 0.5 },
+  radiusTextActive: { color: '#000' },
 
   marker: {
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: COLORS.primary, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: '#fff', ...SHADOWS.sm,
+    borderWidth: 2, borderColor: '#000', ...SHADOWS.sm,
   },
-  markerSelected: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.primaryDark },
+  markerSelected: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.primary, borderWidth: 3, borderColor: '#fff' },
 
   selectedCard: {
     position: 'absolute', bottom: 20, left: 0, right: 0,
   },
   closeCard: {
     position: 'absolute', top: 8, right: SPACING.xl,
-    backgroundColor: COLORS.bgCard, borderRadius: 14, padding: 4, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: COLORS.bgCard, borderRadius: 14, padding: 4, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
 });
 

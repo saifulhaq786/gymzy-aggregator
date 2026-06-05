@@ -93,7 +93,7 @@ const GymDetailScreen = ({ route, navigation }) => {
             <Text style={styles.gymName}>{gym.name}</Text>
             {gym.isFeatured && (
               <View style={styles.featuredBadge}>
-                <Text style={styles.featuredBadgeText}>⭐ Featured</Text>
+                <Text style={styles.featuredBadgeText}>FEATURED</Text>
               </View>
             )}
           </View>
@@ -129,7 +129,7 @@ const GymDetailScreen = ({ route, navigation }) => {
                 onPress={() => setActiveTab(tab)}
               >
                 <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab.toUpperCase()}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -141,10 +141,10 @@ const GymDetailScreen = ({ route, navigation }) => {
           {/* About Tab */}
           {activeTab === 'about' && (
             <View>
-              <Text style={styles.sectionTitle}>About</Text>
+              <Text style={styles.sectionTitle}>ABOUT</Text>
               <Text style={styles.description}>{gym.description || 'No description available.'}</Text>
 
-              <Text style={styles.sectionTitle}>Facilities</Text>
+              <Text style={styles.sectionTitle}>FACILITIES</Text>
               <View style={styles.facilitiesGrid}>
                 {gym.facilities?.map((f) => (
                   <View key={f} style={styles.facilityItem}>
@@ -153,12 +153,12 @@ const GymDetailScreen = ({ route, navigation }) => {
                       size={22}
                       color={COLORS.primary}
                     />
-                    <Text style={styles.facilityLabel}>{f}</Text>
+                    <Text style={styles.facilityLabel}>{f.toUpperCase()}</Text>
                   </View>
                 ))}
               </View>
 
-              <Text style={styles.sectionTitle}>Pricing</Text>
+              <Text style={styles.sectionTitle}>PRICING</Text>
               <View style={styles.pricingGrid}>
                 {[
                   { key: 'hourly', label: 'Per Hour', icon: 'clock-outline' },
@@ -169,12 +169,12 @@ const GymDetailScreen = ({ route, navigation }) => {
                   <View key={key} style={styles.priceCard}>
                     <MaterialCommunityIcons name={icon} size={20} color={COLORS.primary} />
                     <Text style={styles.priceAmount}>₹{gym.pricing[key]}</Text>
-                    <Text style={styles.priceLabel}>{label}</Text>
+                    <Text style={styles.priceLabel}>{label.toUpperCase()}</Text>
                   </View>
                 ))}
               </View>
 
-              <Text style={styles.sectionTitle}>Contact</Text>
+              <Text style={styles.sectionTitle}>CONTACT</Text>
               <View style={styles.contactRow}>
                 {gym.contact?.phone && (
                   <TouchableOpacity style={styles.contactBtn} onPress={() => Linking.openURL(`tel:${gym.contact.phone}`)}>
@@ -185,7 +185,7 @@ const GymDetailScreen = ({ route, navigation }) => {
                 {gym.contact?.website && (
                   <TouchableOpacity style={styles.contactBtn} onPress={() => Linking.openURL(gym.contact.website)}>
                     <MaterialCommunityIcons name="web" size={18} color={COLORS.primary} />
-                    <Text style={styles.contactText}>Website</Text>
+                    <Text style={styles.contactText}>WEBSITE</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -195,7 +195,7 @@ const GymDetailScreen = ({ route, navigation }) => {
           {/* Equipment Tab */}
           {activeTab === 'equipment' && (
             <View>
-              <Text style={styles.sectionTitle}>Equipment ({gym.equipment?.length || 0} types)</Text>
+              <Text style={styles.sectionTitle}>EQUIPMENT ({gym.equipment?.length || 0} TYPES)</Text>
               {gym.equipment?.map((eq, i) => (
                 <View key={i} style={styles.equipmentRow}>
                   <MaterialCommunityIcons name="dumbbell" size={20} color={COLORS.primary} />
@@ -218,7 +218,7 @@ const GymDetailScreen = ({ route, navigation }) => {
           {/* Trainers Tab */}
           {activeTab === 'trainers' && (
             <View>
-              <Text style={styles.sectionTitle}>Trainers ({gym.trainers?.length || 0})</Text>
+              <Text style={styles.sectionTitle}>TRAINERS ({gym.trainers?.length || 0})</Text>
               {gym.trainers?.map((trainer) => (
                 <TouchableOpacity
                   key={trainer._id}
@@ -250,7 +250,7 @@ const GymDetailScreen = ({ route, navigation }) => {
           {/* Reviews Tab */}
           {activeTab === 'reviews' && (
             <View>
-              <Text style={styles.sectionTitle}>Reviews ({gym.totalReviews})</Text>
+              <Text style={styles.sectionTitle}>REVIEWS ({gym.totalReviews})</Text>
               {reviews.map((review) => (
                 <View key={review._id} style={styles.reviewCard}>
                   <View style={styles.reviewHeader}>
@@ -264,7 +264,7 @@ const GymDetailScreen = ({ route, navigation }) => {
                   <Text style={styles.reviewComment}>{review.comment}</Text>
                   {review.ownerReply && (
                     <View style={styles.ownerReply}>
-                      <Text style={styles.ownerReplyLabel}>🏢 Owner Reply</Text>
+                      <Text style={styles.ownerReplyLabel}>PARTNER REPLY</Text>
                       <Text style={styles.ownerReplyText}>{review.ownerReply.comment}</Text>
                     </View>
                   )}
@@ -285,8 +285,8 @@ const GymDetailScreen = ({ route, navigation }) => {
           style={styles.bookBtn}
           onPress={() => navigation.navigate('Booking', { gym })}
         >
-          <Text style={styles.bookBtnText}>Book Now</Text>
-          <MaterialCommunityIcons name="arrow-right" size={18} color="#fff" />
+          <Text style={styles.bookBtnText}>BOOK NOW</Text>
+          <MaterialCommunityIcons name="arrow-right" size={18} color="#000" />
         </TouchableOpacity>
       </View>
     </View>
@@ -312,8 +312,8 @@ const styles = StyleSheet.create({
   infoSection: { padding: SPACING.base, backgroundColor: COLORS.bg },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm, marginBottom: 6 },
   gymName: { flex: 1, fontSize: FONTS.sizes['2xl'], fontWeight: '900', color: COLORS.textPrimary },
-  featuredBadge: { backgroundColor: `${COLORS.primary}20`, borderRadius: RADIUS.sm, paddingHorizontal: 8, paddingVertical: 3 },
-  featuredBadgeText: { color: COLORS.primary, fontSize: FONTS.sizes.xs, fontWeight: '700' },
+  featuredBadge: { backgroundColor: COLORS.primary, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
+  featuredBadgeText: { color: '#000', fontSize: 9, fontWeight: '950', letterSpacing: 0.5 },
 
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: SPACING.sm },
   address: { flex: 1, color: COLORS.textSecondary, fontSize: FONTS.sizes.sm },
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary, borderRadius: RADIUS.xl, paddingHorizontal: SPACING.xl, paddingVertical: SPACING.md,
     ...SHADOWS.glow,
   },
-  bookBtnText: { color: '#fff', fontWeight: '800', fontSize: FONTS.sizes.md },
+  bookBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.md, letterSpacing: 0.5 },
 });
 
 export default GymDetailScreen;

@@ -111,17 +111,14 @@ const ProfileScreen = ({ navigation }) => {
                 <Text style={styles.avatarInitial}>{user?.name?.[0]?.toUpperCase() || 'U'}</Text>
               </View>
             )}
-            <View style={styles.roleBadge}>
-              <Text style={styles.roleBadgeText}>
-                {user?.role === 'gym_owner' ? '🏢' : user?.role === 'admin' ? '🛡️' : '🏃'}
-              </Text>
-            </View>
           </View>
 
-          <Text style={styles.userName}>{user?.name}</Text>
-          <Text style={styles.userRole}>
-            {user?.role === 'gym_owner' ? 'Gym Owner' : user?.role === 'admin' ? 'Admin' : 'Gym Member'}
-          </Text>
+          <Text style={styles.userName}>{user?.name?.toUpperCase()}</Text>
+          <View style={styles.roleContainer}>
+            <Text style={styles.roleText}>
+              {user?.role === 'gym_owner' ? 'PARTNER' : user?.role === 'admin' ? 'ADMIN' : 'ATHLETE'}
+            </Text>
+          </View>
           {user?.email && <Text style={styles.userEmail}>{user.email}</Text>}
           {user?.phone && <Text style={styles.userPhone}>{user.phone}</Text>}
         </View>
@@ -129,9 +126,9 @@ const ProfileScreen = ({ navigation }) => {
         {/* Stats */}
         <View style={styles.statsRow}>
           {[
-            { label: 'Sessions', value: '0', icon: 'dumbbell' },
-            { label: 'Gyms Visited', value: '0', icon: 'map-marker-multiple' },
-            { label: 'Reviews', value: '0', icon: 'star' },
+            { label: 'SESSIONS', value: '0', icon: 'dumbbell' },
+            { label: 'VISITED', value: '0', icon: 'map-marker-multiple' },
+            { label: 'REVIEWS', value: '0', icon: 'star' },
           ].map(({ label, value, icon }) => (
             <View key={label} style={styles.statItem}>
               <MaterialCommunityIcons name={icon} size={20} color={COLORS.primary} />
@@ -157,17 +154,17 @@ const ProfileScreen = ({ navigation }) => {
         {/* Logout */}
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
           <MaterialCommunityIcons name="logout" size={20} color={COLORS.error} />
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.logoutText}>LOGOUT</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>Gymzy v1.0.0 🏋️</Text>
+        <Text style={styles.version}>GYMZY v1.0.0</Text>
       </ScrollView>
 
       {/* ── EDIT PROFILE MODAL ─────────────────────────────────────────────────── */}
       <Modal animationType="slide" transparent={true} visible={editVisible} onRequestClose={() => setEditVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>✍️ Edit Profile</Text>
+            <Text style={styles.modalTitle}>EDIT PROFILE</Text>
 
             <TouchableOpacity style={styles.modalAvatarEdit} onPress={handlePickImage}>
               {selectedPhoto ? (
@@ -176,14 +173,14 @@ const ProfileScreen = ({ navigation }) => {
                 <Image source={{ uri: user.profilePhoto }} style={styles.editAvatar} />
               ) : (
                 <View style={styles.editAvatarPlaceholder}>
-                  <MaterialCommunityIcons name="camera-plus" size={32} color="#fff" />
+                  <MaterialCommunityIcons name="camera-plus" size={32} color="#000" />
                 </View>
               )}
-              <Text style={styles.avatarEditLabel}>Change Photo</Text>
+              <Text style={styles.avatarEditLabel}>CHANGE PHOTO</Text>
             </TouchableOpacity>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Name</Text>
+              <Text style={styles.inputLabel}>NAME</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter name"
@@ -194,7 +191,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Phone Number</Text>
+              <Text style={styles.inputLabel}>PHONE NUMBER</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter phone number"
@@ -207,10 +204,10 @@ const ProfileScreen = ({ navigation }) => {
 
             <View style={styles.modalBtns}>
               <TouchableOpacity style={[styles.modalBtn, styles.modalBtnCancel]} onPress={() => setEditVisible(false)} disabled={savingProfile}>
-                <Text style={styles.modalBtnTextCancel}>Cancel</Text>
+                <Text style={styles.modalBtnTextCancel}>CANCEL</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.modalBtn, styles.modalBtnSave]} onPress={handleSaveProfile} disabled={savingProfile}>
-                {savingProfile ? <ActivityIndicator color="#fff" /> : <Text style={styles.modalBtnTextSave}>Save</Text>}
+                {savingProfile ? <ActivityIndicator color="#000" /> : <Text style={styles.modalBtnTextSave}>SAVE</Text>}
               </TouchableOpacity>
             </View>
           </View>
@@ -221,22 +218,22 @@ const ProfileScreen = ({ navigation }) => {
       <Modal animationType="fade" transparent={true} visible={privacyVisible} onRequestClose={() => setPrivacyVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>🛡️ Privacy & Security</Text>
+            <Text style={styles.modalTitle}>PRIVACY & SECURITY</Text>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.modalScroll}>
-              <Text style={styles.modalSectionTitle}>1. Data Protection</Text>
+              <Text style={styles.modalSectionTitle}>1. DATA PROTECTION</Text>
               <Text style={styles.modalText}>Your account information, check-in histories, and payment logs are completely encrypted end-to-end to protect against unauthorized access.</Text>
 
-              <Text style={styles.modalSectionTitle}>2. Location Services</Text>
+              <Text style={styles.modalSectionTitle}>2. LOCATION SERVICES</Text>
               <Text style={styles.modalText}>We access your location data only when the app is active, specifically to find nearby gyms and calculate dynamic distances.</Text>
 
-              <Text style={styles.modalSectionTitle}>3. Secure Check-In</Text>
+              <Text style={styles.modalSectionTitle}>3. SECURE CHECK-IN</Text>
               <Text style={styles.modalText}>Verification codes and QR structures expire instantly after use to safeguard check-in fraud or spoofing.</Text>
 
-              <Text style={styles.modalSectionTitle}>4. Payments Security</Text>
+              <Text style={styles.modalSectionTitle}>4. PAYMENTS SECURITY</Text>
               <Text style={styles.modalText}>Payment operations are routed entirely through SSL-encrypted gateways provided by Razorpay. No credit card credentials are stored locally.</Text>
             </ScrollView>
             <TouchableOpacity style={styles.modalCloseBtn} onPress={() => setPrivacyVisible(false)}>
-              <Text style={styles.modalCloseBtnText}>Close</Text>
+              <Text style={styles.modalCloseBtnText}>CLOSE</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -246,14 +243,14 @@ const ProfileScreen = ({ navigation }) => {
       <Modal animationType="fade" transparent={true} visible={aboutVisible} onRequestClose={() => setAboutVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>🏋️ About Gymzy</Text>
+            <Text style={styles.modalTitle}>ABOUT GYMZY</Text>
             <View style={styles.aboutCard}>
               <Text style={styles.aboutVersion}>Version 1.0.0 (Development Build)</Text>
               <Text style={styles.aboutDesc}>Gymzy is a location-based gym aggregator designed to democratize fitness. Users can search nearby gyms, pay dynamically per session or booking, and gain instant check-in access via simple QR scanning.</Text>
               <Text style={styles.aboutDesc}>Built using React Native, Expo, Node.js, Express, MongoDB, and Razorpay.</Text>
             </View>
             <TouchableOpacity style={styles.modalCloseBtn} onPress={() => setAboutVisible(false)}>
-              <Text style={styles.modalCloseBtnText}>Close</Text>
+              <Text style={styles.modalCloseBtnText}>CLOSE</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -263,7 +260,7 @@ const ProfileScreen = ({ navigation }) => {
       <Modal animationType="slide" transparent={true} visible={helpVisible} onRequestClose={() => setHelpVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>❓ Help & FAQs</Text>
+            <Text style={styles.modalTitle}>HELP & FAQs</Text>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.modalScroll}>
               {[
                 { q: 'How do I check in?', a: 'Go to your bookings, tap the active pass, and let the gym staff scan your dynamic QR check-in code at the front desk.' },
@@ -272,13 +269,13 @@ const ProfileScreen = ({ navigation }) => {
                 { q: 'How do I contact support?', a: 'For further billing queries, account actions, or partner requests, reach us at support@gymzy.com.' }
               ].map(({ q, a }, idx) => (
                 <View key={idx} style={styles.faqBlock}>
-                  <Text style={styles.faqQ}>Q. {q}</Text>
+                  <Text style={styles.faqQ}>Q. {q.toUpperCase()}</Text>
                   <Text style={styles.faqA}>{a}</Text>
                 </View>
               ))}
             </ScrollView>
             <TouchableOpacity style={styles.modalCloseBtn} onPress={() => setHelpVisible(false)}>
-              <Text style={styles.modalCloseBtnText}>Close</Text>
+              <Text style={styles.modalCloseBtnText}>CLOSE</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -299,38 +296,33 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', ...SHADOWS.glow,
   },
   avatarInitial: { fontSize: 36, fontWeight: '900', color: '#fff' },
-  roleBadge: {
-    position: 'absolute', bottom: 0, right: 0, width: 28, height: 28,
-    backgroundColor: COLORS.bgCard, borderRadius: 14, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 2, borderColor: COLORS.bg,
-  },
-  roleBadgeText: { fontSize: 14 },
+  roleContainer: { backgroundColor: COLORS.primary, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 4, marginTop: SPACING.xs },
+  roleText: { color: '#000', fontSize: 10, fontWeight: '950', letterSpacing: 0.5 },
 
   userName: { fontSize: FONTS.sizes['2xl'], fontWeight: '900', color: COLORS.textPrimary },
-  userRole: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base, marginTop: 4 },
-  userEmail: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, marginTop: 2 },
+  userEmail: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, marginTop: 4 },
   userPhone: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, marginTop: 1 },
 
   statsRow: {
     flexDirection: 'row', marginHorizontal: SPACING.base, marginBottom: SPACING.lg,
-    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.xl, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
   statItem: { flex: 1, alignItems: 'center', paddingVertical: SPACING.md },
   statValue: { fontSize: FONTS.sizes.xl, fontWeight: '900', color: COLORS.textPrimary, marginTop: 4 },
-  statLabel: { color: COLORS.textMuted, fontSize: FONTS.sizes.xs, marginTop: 2 },
+  statLabel: { color: COLORS.textMuted, fontSize: 10, fontWeight: '800', marginTop: 2 },
 
-  menuCard: { marginHorizontal: SPACING.base, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.xl, borderWidth: 1, borderColor: COLORS.border, overflow: 'hidden', marginBottom: SPACING.md },
+  menuCard: { marginHorizontal: SPACING.base, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', overflow: 'hidden', marginBottom: SPACING.md },
   menuItem: { flexDirection: 'row', alignItems: 'center', gap: SPACING.md, padding: SPACING.md },
-  menuItemBorder: { borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  menuIcon: { width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  menuItemBorder: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
+  menuIcon: { width: 36, height: 36, borderRadius: 6, alignItems: 'center', justifyContent: 'center' },
   menuLabel: { flex: 1, color: COLORS.textPrimary, fontWeight: '600', fontSize: FONTS.sizes.base },
 
   logoutBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: SPACING.sm,
     marginHorizontal: SPACING.base, padding: SPACING.md, backgroundColor: `${COLORS.error}15`,
-    borderRadius: RADIUS.xl, borderWidth: 1, borderColor: `${COLORS.error}30`, marginBottom: SPACING.xl,
+    borderRadius: RADIUS.lg, borderWidth: 1, borderColor: `${COLORS.error}30`, marginBottom: SPACING.xl,
   },
-  logoutText: { color: COLORS.error, fontWeight: '800', fontSize: FONTS.sizes.md },
+  logoutText: { color: COLORS.error, fontWeight: '800', fontSize: FONTS.sizes.md, letterSpacing: 0.5 },
 
   version: { textAlign: 'center', color: COLORS.textMuted, fontSize: FONTS.sizes.sm, marginBottom: SPACING.xl },
 
@@ -339,47 +331,47 @@ const styles = StyleSheet.create({
     flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center', padding: SPACING.base
   },
   modalContent: {
-    width: '100%', maxHeight: '80%', backgroundColor: COLORS.bgCard, borderRadius: RADIUS.xl,
-    padding: SPACING.lg, borderWidth: 1, borderColor: COLORS.border, ...SHADOWS.glow,
+    width: '100%', maxHeight: '80%', backgroundColor: COLORS.bgCard, borderRadius: RADIUS.lg,
+    padding: SPACING.lg, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', ...SHADOWS.glow,
   },
-  modalTitle: { fontSize: FONTS.sizes.xl, fontWeight: '900', color: COLORS.textPrimary, marginBottom: SPACING.md, textAlign: 'center' },
+  modalTitle: { fontSize: FONTS.sizes.xl, fontWeight: '950', color: COLORS.textPrimary, marginBottom: SPACING.md, textAlign: 'center', letterSpacing: 0.5 },
   modalScroll: { marginVertical: SPACING.sm },
-  modalSectionTitle: { fontSize: FONTS.sizes.base, fontWeight: '800', color: COLORS.primary, marginTop: SPACING.md, marginBottom: 4 },
+  modalSectionTitle: { fontSize: 11, fontWeight: '900', color: COLORS.primary, marginTop: SPACING.md, marginBottom: 4, letterSpacing: 0.5 },
   modalText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, lineHeight: 20 },
   modalCloseBtn: {
-    backgroundColor: COLORS.primary, paddingVertical: SPACING.md, borderRadius: RADIUS.xl, marginTop: SPACING.base, alignItems: 'center'
+    backgroundColor: COLORS.primary, paddingVertical: SPACING.md, borderRadius: RADIUS.md, marginTop: SPACING.base, alignItems: 'center', ...SHADOWS.glow,
   },
-  modalCloseBtnText: { color: '#fff', fontWeight: '800', fontSize: FONTS.sizes.base },
+  modalCloseBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.base, letterSpacing: 1 },
 
   // Edit Avatar Styles
   modalAvatarEdit: { alignItems: 'center', marginBottom: SPACING.lg },
   editAvatar: { width: 80, height: 80, borderRadius: 40, borderWidth: 2, borderColor: COLORS.primary },
   editAvatarPlaceholder: { width: 80, height: 80, borderRadius: 40, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center' },
-  avatarEditLabel: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.sm, marginTop: SPACING.xs },
+  avatarEditLabel: { color: COLORS.primary, fontWeight: '800', fontSize: 11, marginTop: SPACING.xs, letterSpacing: 0.5 },
 
   inputGroup: { width: '100%', marginBottom: SPACING.md },
-  inputLabel: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.textSecondary, marginBottom: 6 },
+  inputLabel: { fontSize: 11, fontWeight: '800', color: COLORS.textSecondary, marginBottom: 6, letterSpacing: 0.5 },
   input: {
-    backgroundColor: COLORS.bgElevated, borderRadius: RADIUS.md, borderWidth: 1,
-    borderColor: COLORS.border, paddingHorizontal: SPACING.md, height: 50,
+    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)', paddingHorizontal: SPACING.md, height: 50,
     color: COLORS.textPrimary, fontSize: FONTS.sizes.md,
   },
 
   modalBtns: { flexDirection: 'row', gap: SPACING.sm, marginTop: SPACING.md },
-  modalBtn: { flex: 1, height: 50, borderRadius: RADIUS.xl, justifyContent: 'center', alignItems: 'center' },
-  modalBtnCancel: { backgroundColor: COLORS.bgElevated, borderWidth: 1, borderColor: COLORS.border },
-  modalBtnSave: { backgroundColor: COLORS.primary },
-  modalBtnTextCancel: { color: COLORS.textPrimary, fontWeight: '700' },
-  modalBtnTextSave: { color: '#fff', fontWeight: '800' },
+  modalBtn: { flex: 1, height: 50, borderRadius: RADIUS.md, justifyContent: 'center', alignItems: 'center' },
+  modalBtnCancel: { backgroundColor: COLORS.bgCard, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  modalBtnSave: { backgroundColor: COLORS.primary, ...SHADOWS.glow },
+  modalBtnTextCancel: { color: COLORS.textPrimary, fontWeight: '850', letterSpacing: 0.5 },
+  modalBtnTextSave: { color: '#000', fontWeight: '900', letterSpacing: 0.5 },
 
   // About Styles
-  aboutCard: { marginVertical: SPACING.md, padding: SPACING.md, backgroundColor: COLORS.bgElevated, borderRadius: RADIUS.md },
-  aboutVersion: { color: COLORS.primary, fontWeight: '800', fontSize: FONTS.sizes.base, marginBottom: SPACING.xs },
+  aboutCard: { marginVertical: SPACING.md, padding: SPACING.md, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  aboutVersion: { color: COLORS.primary, fontWeight: '850', fontSize: FONTS.sizes.base, marginBottom: SPACING.xs },
   aboutDesc: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, lineHeight: 20, marginBottom: SPACING.sm },
 
   // FAQ Styles
   faqBlock: { marginBottom: SPACING.md },
-  faqQ: { color: COLORS.textPrimary, fontWeight: '800', fontSize: FONTS.sizes.base },
+  faqQ: { color: COLORS.textPrimary, fontWeight: '900', fontSize: 13, letterSpacing: 0.3 },
   faqA: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, lineHeight: 18, marginTop: 2 },
 });
 

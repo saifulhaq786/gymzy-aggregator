@@ -65,7 +65,7 @@ const GymCard = ({ gym, onPress }) => {
         />
         {gym.isFeatured && (
           <View style={styles.featuredTag}>
-            <Text style={styles.featuredTagText}>⭐ Featured</Text>
+            <Text style={styles.featuredTagText}>FEATURED</Text>
           </View>
         )}
       </View>
@@ -104,7 +104,7 @@ const GymCard = ({ gym, onPress }) => {
           <View style={styles.facilities}>
             {gym.facilities.slice(0, 4).map((f) => (
               <View key={f} style={styles.facilityTag}>
-                <Text style={styles.facilityText}>{f}</Text>
+                <Text style={styles.facilityText}>{f.toUpperCase()}</Text>
               </View>
             ))}
             {gym.facilities.length > 4 && (
@@ -121,51 +121,51 @@ const GymCard = ({ gym, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.bgCard,
-    borderRadius: RADIUS.xl,
+    borderRadius: RADIUS.lg,
     marginHorizontal: SPACING.base,
     marginBottom: SPACING.md,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: 'rgba(255,255,255,0.06)',
     ...SHADOWS.sm,
   },
-  imageContainer: { height: 170, position: 'relative' },
+  imageContainer: { height: 180, position: 'relative' },
   image: { width: '100%', height: '100%' },
   featuredTag: {
     position: 'absolute', top: SPACING.sm, left: SPACING.sm,
-    backgroundColor: COLORS.primary, borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm, paddingVertical: 3,
+    backgroundColor: COLORS.primary, borderRadius: 4,
+    paddingHorizontal: 8, paddingVertical: 4,
   },
-  featuredTagText: { color: '#fff', fontSize: FONTS.sizes.xs, fontWeight: '700' },
+  featuredTagText: { color: '#000', fontSize: 10, fontWeight: '900', letterSpacing: 1 },
 
-  content: { padding: SPACING.md },
+  content: { padding: SPACING.base },
 
-  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  name: { flex: 1, fontSize: FONTS.sizes.lg, fontWeight: '800', color: COLORS.textPrimary, marginRight: SPACING.sm },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  name: { flex: 1, fontSize: FONTS.sizes.md, fontWeight: '800', color: COLORS.textPrimary, marginRight: SPACING.sm },
 
   badge: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    paddingHorizontal: SPACING.sm, paddingVertical: 3, borderRadius: RADIUS.full,
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: RADIUS.full,
   },
-  badgeText: { fontSize: FONTS.sizes.xs, fontWeight: '700' },
+  badgeText: { fontSize: 10, fontWeight: '800', letterSpacing: 0.5, textTransform: 'uppercase' },
 
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: SPACING.sm },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: SPACING.md },
   metaText: { flex: 1, color: COLORS.textSecondary, fontSize: FONTS.sizes.sm },
-  distance: { color: COLORS.primary, fontSize: FONTS.sizes.sm, fontWeight: '600' },
+  distance: { color: COLORS.primary, fontSize: FONTS.sizes.sm, fontWeight: '700' },
 
-  bottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.sm },
+  bottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.md },
   ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   rating: { color: COLORS.textPrimary, fontWeight: '700', fontSize: FONTS.sizes.base },
   reviews: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm },
-  price: { color: COLORS.primary, fontWeight: '800', fontSize: FONTS.sizes.md },
+  price: { color: COLORS.primary, fontWeight: '900', fontSize: FONTS.sizes.md },
 
   facilities: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   facilityTag: {
-    backgroundColor: COLORS.bgElevated, borderRadius: RADIUS.sm,
-    paddingHorizontal: SPACING.sm, paddingVertical: 3, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: COLORS.bgElevated, borderRadius: 4,
+    paddingHorizontal: 8, paddingVertical: 4, borderWidth: 1, borderColor: 'rgba(255,255,255,0.04)',
   },
-  facilityText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.xs, fontWeight: '600' },
-  moreFacilities: { color: COLORS.textMuted, fontSize: FONTS.sizes.xs, alignSelf: 'center' },
+  facilityText: { color: COLORS.textSecondary, fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
+  moreFacilities: { color: COLORS.textMuted, fontSize: FONTS.sizes.xs, alignSelf: 'center', fontWeight: '700', marginLeft: 2 },
 });
 
 export default GymCard;

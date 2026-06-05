@@ -174,7 +174,7 @@ const BookingScreen = ({ route, navigation }) => {
         </View>
 
         {/* Plan Selection */}
-        <Text style={styles.sectionTitle}>Select Plan</Text>
+        <Text style={styles.sectionTitle}>SELECT PLAN</Text>
         <View style={styles.plansGrid}>
           {availableTypes.map((type) => {
             const price = type.key === 'session_with_trainer'
@@ -194,11 +194,11 @@ const BookingScreen = ({ route, navigation }) => {
                 <MaterialCommunityIcons
                   name={type.icon}
                   size={24}
-                  color={isActive ? '#fff' : COLORS.primary}
+                  color={isActive ? '#000' : COLORS.primary}
                 />
-                <Text style={[styles.planLabel, isActive && styles.planLabelActive]}>{type.label}</Text>
+                <Text style={[styles.planLabel, isActive && styles.planLabelActive]}>{type.label.toUpperCase()}</Text>
                 <Text style={[styles.planPrice, isActive && styles.planPriceActive]}>₹{price || '—'}</Text>
-                <Text style={[styles.planDesc, isActive && { color: 'rgba(255,255,255,0.7)' }]}>{type.desc}</Text>
+                <Text style={[styles.planDesc, isActive ? { color: 'rgba(0,0,0,0.6)' } : { color: COLORS.textMuted }]}>{type.desc}</Text>
               </TouchableOpacity>
             );
           })}
@@ -207,26 +207,29 @@ const BookingScreen = ({ route, navigation }) => {
         {/* Trainer Selection (if session_with_trainer) */}
         {selectedType === 'session_with_trainer' && gym.trainers?.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Select Trainer</Text>
-            {gym.trainers.map((trainer) => (
-              <TouchableOpacity
-                key={trainer._id}
-                style={[styles.trainerOption, selectedTrainer?._id === trainer._id && styles.trainerOptionActive]}
-                onPress={() => setSelectedTrainer(trainer)}
-              >
-                <Text style={styles.trainerOptionName}>{trainer.name}</Text>
-                <Text style={styles.trainerOptionSpec}>{trainer.specializations?.slice(0, 2).join(', ')}</Text>
-                <Text style={styles.trainerOptionPrice}>₹{trainer.pricing?.perSession}/session</Text>
-              </TouchableOpacity>
-            ))}
+            <Text style={styles.sectionTitle}>SELECT TRAINER</Text>
+            {gym.trainers.map((trainer) => {
+              const isSelected = selectedTrainer?._id === trainer._id;
+              return (
+                <TouchableOpacity
+                  key={trainer._id}
+                  style={[styles.trainerOption, isSelected && styles.trainerOptionActive]}
+                  onPress={() => setSelectedTrainer(trainer)}
+                >
+                  <Text style={[styles.trainerOptionName, isSelected && styles.trainerActiveText]}>{trainer.name}</Text>
+                  <Text style={[styles.trainerOptionSpec, isSelected && styles.trainerActiveTextSecondary]}>{trainer.specializations?.slice(0, 2).join(', ')}</Text>
+                  <Text style={[styles.trainerOptionPrice, isSelected && styles.trainerActiveText]}>₹{trainer.pricing?.perSession}/session</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         )}
 
         {/* Scheduling Section */}
-        <Text style={styles.sectionTitle}>📅 Schedule Session</Text>
+        <Text style={styles.sectionTitle}>CHOOSE DATE & TIME</Text>
         
         {/* Date Selector Carousel */}
-        <Text style={styles.subLabel}>Choose Date</Text>
+        <Text style={styles.subLabel}>Date Selection</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dateCarousel}>
           {getDatesList().map((date, idx) => {
             const isSelected = selectedDate.toDateString() === date.toDateString();
@@ -251,7 +254,7 @@ const BookingScreen = ({ route, navigation }) => {
         {/* Time Slot Grid (for hourly/trainer passes) */}
         {(selectedType === 'hourly' || selectedType === 'session_with_trainer') && (
           <View style={styles.section}>
-            <Text style={styles.subLabel}>Choose Time Slot</Text>
+            <Text style={styles.subLabel}>Time Slot Selection</Text>
             <View style={styles.slotsGrid}>
               {TIME_SLOTS.map((slot) => {
                 const isSelected = selectedSlot?.start === slot.start;
@@ -295,11 +298,11 @@ const BookingScreen = ({ route, navigation }) => {
       <View style={styles.payBar}>
         <TouchableOpacity style={styles.payBtn} onPress={handleBooking} disabled={loading}>
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#000" />
           ) : (
             <>
-              <MaterialCommunityIcons name="shield-check" size={20} color="#fff" />
-              <Text style={styles.payBtnText}>Pay ₹{getPrice()} Securely</Text>
+              <MaterialCommunityIcons name="shield-check" size={20} color="#000" />
+              <Text style={styles.payBtnText}>PAY ₹{getPrice()} SECURELY</Text>
             </>
           )}
         </TouchableOpacity>
@@ -331,19 +334,21 @@ const styles = StyleSheet.create({
   },
   planCardActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary, ...SHADOWS.glow },
   planLabel: { color: COLORS.textPrimary, fontWeight: '800', fontSize: FONTS.sizes.base, marginTop: SPACING.xs },
-  planLabelActive: { color: '#fff' },
+  planLabelActive: { color: '#000' },
   planPrice: { color: COLORS.primary, fontWeight: '900', fontSize: FONTS.sizes.xl, marginTop: 4 },
-  planPriceActive: { color: '#fff' },
+  planPriceActive: { color: '#000' },
   planDesc: { color: COLORS.textMuted, fontSize: FONTS.sizes.xs, marginTop: 2, textAlign: 'center' },
 
   trainerOption: {
     backgroundColor: COLORS.bgCard, borderRadius: RADIUS.xl, padding: SPACING.md,
     marginBottom: SPACING.sm, borderWidth: 2, borderColor: COLORS.border,
   },
-  trainerOptionActive: { borderColor: COLORS.primary },
+  trainerOptionActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primary },
   trainerOptionName: { color: COLORS.textPrimary, fontWeight: '800', fontSize: FONTS.sizes.md },
   trainerOptionSpec: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, marginTop: 2 },
   trainerOptionPrice: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base, marginTop: 4 },
+  trainerActiveText: { color: '#000' },
+  trainerActiveTextSecondary: { color: 'rgba(0,0,0,0.6)' },
 
   // Scheduling Styles
   dateCarousel: { gap: SPACING.xs, paddingBottom: SPACING.md, marginBottom: SPACING.md },
@@ -355,7 +360,7 @@ const styles = StyleSheet.create({
   dateDay: { fontSize: FONTS.sizes.xs, color: COLORS.textSecondary, fontWeight: '600', textTransform: 'uppercase' },
   dateNumber: { fontSize: FONTS.sizes.xl, color: COLORS.textPrimary, fontWeight: '900', marginVertical: 2 },
   dateMonth: { fontSize: FONTS.sizes.xs, color: COLORS.textMuted, fontWeight: '700' },
-  dateTextActive: { color: '#fff' },
+  dateTextActive: { color: '#000' },
 
   slotsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs, marginBottom: SPACING.lg },
   slotChip: {
@@ -364,7 +369,7 @@ const styles = StyleSheet.create({
   },
   slotChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   slotText: { color: COLORS.textSecondary, fontWeight: '600', fontSize: FONTS.sizes.sm },
-  slotTextActive: { color: '#fff' },
+  slotTextActive: { color: '#000' },
 
   summaryCard: {
     backgroundColor: COLORS.bgCard, borderRadius: RADIUS.xl, padding: SPACING.md,
@@ -383,7 +388,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: SPACING.sm,
     backgroundColor: COLORS.primary, borderRadius: RADIUS.xl, height: 56, ...SHADOWS.glow,
   },
-  payBtnText: { color: '#fff', fontWeight: '900', fontSize: FONTS.sizes.lg },
+  payBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.lg },
   razorpayNote: { textAlign: 'center', color: COLORS.textMuted, fontSize: FONTS.sizes.xs, marginTop: SPACING.xs },
 });
 

@@ -41,32 +41,35 @@ const RegisterScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Join thousands of gym-goers on Gymzy</Text>
+        <Text style={styles.subtitle}>Join the elite fitness network</Text>
 
         {/* Role Selector */}
         <View style={styles.roleContainer}>
-          <Text style={styles.label}>I am a...</Text>
+          <Text style={styles.label}>I AM A...</Text>
           <View style={styles.roleRow}>
             {[
-              { key: 'user', label: '🏃 Gym-Goer', desc: 'Find & book gyms' },
-              { key: 'gym_owner', label: '🏢 Gym Owner', desc: 'List my gym' },
-            ].map((r) => (
-              <TouchableOpacity
-                key={r.key}
-                style={[styles.roleCard, form.role === r.key && styles.roleCardActive]}
-                onPress={() => update('role', r.key)}
-              >
-                <Text style={styles.roleLabel}>{r.label}</Text>
-                <Text style={styles.roleDesc}>{r.desc}</Text>
-              </TouchableOpacity>
-            ))}
+              { key: 'user', label: 'Gym-Goer', desc: 'Find & book clubs' },
+              { key: 'gym_owner', label: 'Club Owner', desc: 'List my facility' },
+            ].map((r) => {
+              const isActive = form.role === r.key;
+              return (
+                <TouchableOpacity
+                  key={r.key}
+                  style={[styles.roleCard, isActive && styles.roleCardActive]}
+                  onPress={() => update('role', r.key)}
+                >
+                  <Text style={[styles.roleLabel, isActive && styles.roleTextActive]}>{r.label.toUpperCase()}</Text>
+                  <Text style={[styles.roleDesc, isActive && styles.roleDescActive]}>{r.desc}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
         {/* Inputs */}
         {[
-          { field: 'name', label: 'Full Name', icon: 'account-outline', placeholder: 'John Doe', type: 'default' },
-          { field: 'email', label: 'Email', icon: 'email-outline', placeholder: 'you@example.com', type: 'email-address' },
+          { field: 'name', label: 'FULL NAME', icon: 'account-outline', placeholder: 'John Doe', type: 'default' },
+          { field: 'email', label: 'EMAIL ADDRESS', icon: 'email-outline', placeholder: 'you@example.com', type: 'email-address' },
         ].map(({ field, label, icon, placeholder, type }) => (
           <View style={styles.inputGroup} key={field}>
             <Text style={styles.label}>{label}</Text>
@@ -87,7 +90,7 @@ const RegisterScreen = ({ navigation }) => {
 
         {/* Password */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>PASSWORD</Text>
           <View style={styles.inputWrapper}>
             <MaterialCommunityIcons name="lock-outline" size={20} color={COLORS.textMuted} style={styles.inputIcon} />
             <TextInput
@@ -105,7 +108,7 @@ const RegisterScreen = ({ navigation }) => {
         </View>
 
         <TouchableOpacity style={styles.registerBtn} onPress={handleRegister} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.registerBtnText}>Create Account</Text>}
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.registerBtnText}>CREATE ACCOUNT</Text>}
         </TouchableOpacity>
 
         <View style={styles.footer}>
@@ -124,35 +127,37 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1, width: '100%', maxWidth: 480, paddingHorizontal: SPACING.base, paddingTop: 60, paddingBottom: 40 },
 
   backBtn: { marginBottom: SPACING.lg, width: 40 },
-  title: { fontSize: FONTS.sizes['3xl'], fontWeight: '900', color: COLORS.textPrimary },
+  title: { fontSize: FONTS.sizes['3xl'], fontWeight: '900', color: COLORS.textPrimary, letterSpacing: -0.5 },
   subtitle: { fontSize: FONTS.sizes.base, color: COLORS.textSecondary, marginTop: 4, marginBottom: SPACING.xl },
 
   roleContainer: { marginBottom: SPACING.lg },
   roleRow: { flexDirection: 'row', gap: SPACING.sm, marginTop: SPACING.xs },
   roleCard: {
-    flex: 1, padding: SPACING.md, borderRadius: RADIUS.lg,
-    backgroundColor: COLORS.bgCard, borderWidth: 2, borderColor: COLORS.border,
+    flex: 1, padding: SPACING.base, borderRadius: RADIUS.md,
+    backgroundColor: COLORS.bgCard, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
-  roleCardActive: { borderColor: COLORS.primary, backgroundColor: `${COLORS.primary}15` },
-  roleLabel: { fontSize: FONTS.sizes.base, fontWeight: '700', color: COLORS.textPrimary, marginBottom: 2 },
+  roleCardActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primary },
+  roleLabel: { fontSize: 13, fontWeight: '900', color: COLORS.textPrimary, marginBottom: 4, letterSpacing: 0.5 },
+  roleTextActive: { color: '#000' },
   roleDesc: { fontSize: FONTS.sizes.xs, color: COLORS.textSecondary },
+  roleDescActive: { color: 'rgba(0,0,0,0.7)', fontWeight: '500' },
 
   inputGroup: { marginBottom: SPACING.md },
-  label: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.textSecondary, marginBottom: 6 },
+  label: { fontSize: 11, fontWeight: '800', color: COLORS.textSecondary, marginBottom: 8, letterSpacing: 0.5 },
   inputWrapper: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: COLORS.bgElevated, borderRadius: RADIUS.md,
-    borderWidth: 1, borderColor: COLORS.border, paddingHorizontal: SPACING.md, height: 52,
+    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', paddingHorizontal: SPACING.md, height: 54,
   },
   inputIcon: { marginRight: SPACING.sm },
   input: { flex: 1, color: COLORS.textPrimary, fontSize: FONTS.sizes.md },
 
   registerBtn: {
-    backgroundColor: COLORS.primary, borderRadius: RADIUS.md, height: 52,
-    alignItems: 'center', justifyContent: 'center', marginTop: SPACING.md,
+    backgroundColor: COLORS.primary, borderRadius: RADIUS.md, height: 54,
+    alignItems: 'center', justifyContent: 'center', marginTop: SPACING.lg,
     ...SHADOWS.glow,
   },
-  registerBtnText: { color: '#fff', fontWeight: '800', fontSize: FONTS.sizes.md },
+  registerBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.md, letterSpacing: 1 },
 
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: SPACING.xl },
   footerText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.base },

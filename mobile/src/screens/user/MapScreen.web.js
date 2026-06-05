@@ -68,7 +68,7 @@ const MapScreenWeb = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>🗺️ Nearby Gyms (Web View)</Text>
+        <Text style={styles.title}>NEARBY GYMS</Text>
         <Text style={styles.subtitle}>Showing gyms within {radius / 1000}km of your location</Text>
       </View>
 
@@ -81,7 +81,7 @@ const MapScreenWeb = ({ navigation }) => {
             onPress={() => { setRadius(r); if (location) fetchGyms(location); }}
           >
             <Text style={[styles.radiusText, radius === r && styles.radiusTextActive]}>
-              {r / 1000}km range
+              {r / 1000}KM RANGE
             </Text>
           </TouchableOpacity>
         ))}
@@ -96,8 +96,8 @@ const MapScreenWeb = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.list} showsVerticalScrollIndicator={false}>
           {gyms.length === 0 ? (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyIcon}>🏢</Text>
-              <Text style={styles.emptyTitle}>No Gyms Found</Text>
+              <MaterialCommunityIcons name="dumbbell" size={48} color={COLORS.textMuted} style={styles.emptyIcon} />
+              <Text style={styles.emptyTitle}>NO GYMS FOUND</Text>
               <Text style={styles.emptySubtitle}>Try expanding the search range or registering a gym.</Text>
             </View>
           ) : (
@@ -127,9 +127,9 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.sm,
     backgroundColor: COLORS.bgCard,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
   },
-  title: { fontSize: FONTS.sizes.xl, fontWeight: '800', color: COLORS.textPrimary },
+  title: { fontSize: FONTS.sizes.xl, fontWeight: '950', color: COLORS.textPrimary, letterSpacing: 0.5 },
   subtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, marginTop: 4 },
 
   radiusRow: {
@@ -143,20 +143,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     paddingVertical: 8,
     backgroundColor: COLORS.bgCard,
-    borderRadius: RADIUS.full,
+    borderRadius: RADIUS.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: 'rgba(255,255,255,0.06)',
     ...SHADOWS.sm,
   },
-  radiusChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  radiusText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, fontWeight: '600' },
-  radiusTextActive: { color: '#fff' },
+  radiusChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary, ...SHADOWS.glow },
+  radiusText: { color: COLORS.textSecondary, fontSize: 11, fontWeight: '800', letterSpacing: 0.5 },
+  radiusTextActive: { color: '#000' },
 
   list: { paddingBottom: 100 },
 
   emptyState: { alignItems: 'center', paddingTop: 80, paddingHorizontal: SPACING.xl },
-  emptyIcon: { fontSize: 48, marginBottom: SPACING.md },
-  emptyTitle: { fontSize: FONTS.sizes.lg, fontWeight: '800', color: COLORS.textPrimary, marginBottom: SPACING.xs },
+  emptyIcon: { marginBottom: SPACING.md },
+  emptyTitle: { fontSize: FONTS.sizes.lg, fontWeight: '950', color: COLORS.textPrimary, marginBottom: SPACING.xs, letterSpacing: 0.5 },
   emptySubtitle: { fontSize: FONTS.sizes.sm, color: COLORS.textSecondary, textAlign: 'center' },
 });
 

@@ -93,8 +93,8 @@ const LoginScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>🏋️ GYMZY</Text>
-          <Text style={styles.tagline}>Find your perfect gym, nearby.</Text>
+          <Text style={styles.logo}>GYMZY.</Text>
+          <Text style={styles.tagline}>FIND YOUR CLUB. CHOOSE YOUR GOAL.</Text>
         </View>
 
         {/* Form Card */}
@@ -104,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
 
           {/* Email Input */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>EMAIL ADDRESS</Text>
             <View style={styles.inputWrapper}>
               <MaterialCommunityIcons name="email-outline" size={20} color={COLORS.textMuted} style={styles.inputIcon} />
               <TextInput
@@ -121,7 +121,7 @@ const LoginScreen = ({ navigation }) => {
 
           {/* Password Input */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Password</Text>
+            <Text style={styles.label}>PASSWORD</Text>
             <View style={styles.inputWrapper}>
               <MaterialCommunityIcons name="lock-outline" size={20} color={COLORS.textMuted} style={styles.inputIcon} />
               <TextInput
@@ -145,16 +145,16 @@ const LoginScreen = ({ navigation }) => {
           {/* Login Button */}
           <TouchableOpacity style={styles.loginBtn} onPress={handleEmailLogin} disabled={loading}>
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#000" />
             ) : (
-              <Text style={styles.loginBtnText}>Sign In</Text>
+              <Text style={styles.loginBtnText}>SIGN IN</Text>
             )}
           </TouchableOpacity>
 
           {/* Divider */}
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or continue with</Text>
+            <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
             <View style={styles.dividerLine} />
           </View>
 
@@ -165,7 +165,7 @@ const LoginScreen = ({ navigation }) => {
                 <ActivityIndicator size="small" color={COLORS.textPrimary} />
               ) : (
                 <>
-                  <Text style={styles.socialIcon}>G</Text>
+                  <MaterialCommunityIcons name="google" size={18} color="#EA4335" />
                   <Text style={styles.socialText}>Google</Text>
                 </>
               )}
@@ -175,7 +175,7 @@ const LoginScreen = ({ navigation }) => {
               style={styles.socialBtn}
               onPress={() => navigation.navigate('PhoneOTP')}
             >
-              <MaterialCommunityIcons name="phone" size={18} color={COLORS.textPrimary} />
+              <MaterialCommunityIcons name="phone" size={18} color={COLORS.primary} />
               <Text style={styles.socialText}>Phone</Text>
             </TouchableOpacity>
           </View>
@@ -199,8 +199,8 @@ const LoginScreen = ({ navigation }) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Google Sign-In</Text>
-            <Text style={styles.modalSubtitle}>Select a simulated profile to test the app:</Text>
+            <Text style={styles.modalTitle}>Sign In Settings</Text>
+            <Text style={styles.modalSubtitle}>Select a profile to simulate login:</Text>
 
             <TouchableOpacity
               style={[styles.modalOptionBtn, { backgroundColor: COLORS.primary }]}
@@ -216,11 +216,11 @@ const LoginScreen = ({ navigation }) => {
                 }
               }}
             >
-              <Text style={styles.modalOptionText}>Demo Gym Member (Jane Doe)</Text>
+              <Text style={[styles.modalOptionText, { color: '#000' }]}>Simulate Member Account</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.modalOptionBtn, { backgroundColor: COLORS.bgElevated, borderWidth: 1, borderColor: COLORS.border }]}
+              style={[styles.modalOptionBtn, { backgroundColor: COLORS.bgElevated, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' }]}
               onPress={async () => {
                 setGoogleModalVisible(false);
                 setGoogleLoading(true);
@@ -233,7 +233,7 @@ const LoginScreen = ({ navigation }) => {
                 }
               }}
             >
-              <Text style={[styles.modalOptionText, { color: COLORS.textPrimary }]}>Demo Gym Owner (John Smith)</Text>
+              <Text style={[styles.modalOptionText, { color: COLORS.textPrimary }]}>Simulate Partner Account</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -254,31 +254,31 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 1, width: '100%', maxWidth: 480, paddingHorizontal: SPACING.base, paddingTop: 80, paddingBottom: 40 },
 
   header: { alignItems: 'center', marginBottom: SPACING['3xl'] },
-  logo: { fontSize: 36, fontWeight: '900', color: COLORS.primary, letterSpacing: 2 },
-  tagline: { fontSize: FONTS.sizes.base, color: COLORS.textSecondary, marginTop: SPACING.xs },
+  logo: { fontSize: 38, fontWeight: '900', color: COLORS.primary, letterSpacing: -1.5 },
+  tagline: { fontSize: 10, fontWeight: '800', color: COLORS.textSecondary, marginTop: SPACING.xs, letterSpacing: 1.5 },
 
   card: {
     backgroundColor: COLORS.bgCard,
-    borderRadius: RADIUS.xl,
+    borderRadius: RADIUS.lg,
     padding: SPACING.xl,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: 'rgba(255,255,255,0.06)',
     ...SHADOWS.md,
   },
-  title: { fontSize: FONTS.sizes['2xl'], fontWeight: '800', color: COLORS.textPrimary, marginBottom: 4 },
+  title: { fontSize: FONTS.sizes['2xl'], fontWeight: '900', color: COLORS.textPrimary, marginBottom: 4, letterSpacing: -0.5 },
   subtitle: { fontSize: FONTS.sizes.base, color: COLORS.textSecondary, marginBottom: SPACING.xl },
 
   inputGroup: { marginBottom: SPACING.md },
-  label: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.textSecondary, marginBottom: 6 },
+  label: { fontSize: 11, fontWeight: '800', color: COLORS.textSecondary, marginBottom: 8, letterSpacing: 0.5 },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.bgElevated,
+    backgroundColor: COLORS.bgCard,
     borderRadius: RADIUS.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: 'rgba(255,255,255,0.06)',
     paddingHorizontal: SPACING.md,
-    height: 52,
+    height: 54,
   },
   inputIcon: { marginRight: SPACING.sm },
   input: { flex: 1, color: COLORS.textPrimary, fontSize: FONTS.sizes.md },
@@ -286,17 +286,17 @@ const styles = StyleSheet.create({
   loginBtn: {
     backgroundColor: COLORS.primary,
     borderRadius: RADIUS.md,
-    height: 52,
+    height: 54,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: SPACING.md,
     ...SHADOWS.glow,
   },
-  loginBtnText: { color: '#fff', fontWeight: '800', fontSize: FONTS.sizes.md },
+  loginBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.md, letterSpacing: 1 },
 
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: SPACING.lg },
-  dividerLine: { flex: 1, height: 1, backgroundColor: COLORS.border },
-  dividerText: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, marginHorizontal: SPACING.sm },
+  dividerLine: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.06)' },
+  dividerText: { color: COLORS.textMuted, fontSize: 10, fontWeight: '800', marginHorizontal: SPACING.sm, letterSpacing: 0.5 },
 
   socialRow: { flexDirection: 'row', gap: SPACING.sm },
   socialBtn: {
@@ -309,9 +309,8 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     height: 48,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: 'rgba(255,255,255,0.06)',
   },
-  socialIcon: { fontSize: 16, fontWeight: '900', color: '#EA4335' },
   socialText: { color: COLORS.textPrimary, fontWeight: '600', fontSize: FONTS.sizes.base },
 
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: SPACING.xl },
@@ -321,7 +320,7 @@ const styles = StyleSheet.create({
   // Modal styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.85)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: SPACING.md,
@@ -333,15 +332,16 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 380,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: 'rgba(255,255,255,0.06)',
     alignItems: 'center',
     ...SHADOWS.lg,
   },
   modalTitle: {
     fontSize: FONTS.sizes.lg,
-    fontWeight: '800',
+    fontWeight: '900',
     color: COLORS.textPrimary,
     marginBottom: SPACING.xs,
+    letterSpacing: -0.5,
   },
   modalSubtitle: {
     fontSize: FONTS.sizes.sm,
@@ -357,9 +357,9 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   modalOptionText: {
-    color: '#fff',
-    fontWeight: '700',
+    fontWeight: '800',
     fontSize: FONTS.sizes.base,
+    letterSpacing: 0.5,
   },
   modalCancelBtn: {
     marginTop: SPACING.xs,

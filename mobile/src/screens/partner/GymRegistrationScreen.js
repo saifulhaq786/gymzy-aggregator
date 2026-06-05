@@ -137,12 +137,12 @@ const GymRegistrationScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.stepItem} onPress={() => i < step && setStep(i)}>
               <View style={[styles.stepCircle, i <= step && styles.stepCircleActive]}>
                 {i < step ? (
-                  <MaterialCommunityIcons name="check" size={14} color="#fff" />
+                  <MaterialCommunityIcons name="check" size={14} color="#000" />
                 ) : (
-                  <Text style={[styles.stepNum, i === step && { color: '#fff' }]}>{i + 1}</Text>
+                  <Text style={[styles.stepNum, i === step && { color: '#000' }]}>{i + 1}</Text>
                 )}
               </View>
-              <Text style={[styles.stepLabel, i === step && styles.stepLabelActive]}>{s}</Text>
+              <Text style={[styles.stepLabel, i === step && styles.stepLabelActive]}>{s.toUpperCase()}</Text>
             </TouchableOpacity>
             {i < STEPS.length - 1 && <View style={[styles.stepLine, i < step && styles.stepLineActive]} />}
           </React.Fragment>
@@ -153,14 +153,14 @@ const GymRegistrationScreen = ({ navigation }) => {
         {/* Step 0: Basic Info */}
         {step === 0 && (
           <View>
-            <Text style={styles.stepTitle}>🏋️ Basic Information</Text>
+            <Text style={styles.stepTitle}>BASIC INFORMATION</Text>
 
             {[
-              { field: 'name', label: 'Gym Name *', placeholder: 'e.g. PowerHouse Fitness', multiline: false },
-              { field: 'description', label: 'Description', placeholder: 'Tell people about your gym...', multiline: true },
-              { field: 'phone', label: 'Phone Number', placeholder: '+91 9876543210', multiline: false },
-              { field: 'email', label: 'Email', placeholder: 'gym@example.com', multiline: false },
-              { field: 'website', label: 'Website (optional)', placeholder: 'https://yourgym.com', multiline: false },
+              { field: 'name', label: 'GYM NAME *', placeholder: 'e.g. PowerHouse Fitness', multiline: false },
+              { field: 'description', label: 'DESCRIPTION', placeholder: 'Tell people about your gym...', multiline: true },
+              { field: 'phone', label: 'PHONE NUMBER', placeholder: '+91 9876543210', multiline: false },
+              { field: 'email', label: 'EMAIL', placeholder: 'gym@example.com', multiline: false },
+              { field: 'website', label: 'WEBSITE (OPTIONAL)', placeholder: 'https://yourgym.com', multiline: false },
             ].map(({ field, label, placeholder, multiline }) => (
               <View style={styles.inputGroup} key={field}>
                 <Text style={styles.label}>{label}</Text>
@@ -176,10 +176,10 @@ const GymRegistrationScreen = ({ navigation }) => {
             ))}
 
             {/* Gym Images */}
-            <Text style={styles.label}>Gym Photos (max 10)</Text>
+            <Text style={styles.label}>GYM PHOTOS (MAX 10)</Text>
             <TouchableOpacity style={styles.imagePickerBtn} onPress={pickImage}>
               <MaterialCommunityIcons name="camera-plus" size={24} color={COLORS.primary} />
-              <Text style={styles.imagePickerText}>Add Photos</Text>
+              <Text style={styles.imagePickerText}>ADD PHOTOS</Text>
             </TouchableOpacity>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {images.map((img, i) => (
@@ -197,10 +197,10 @@ const GymRegistrationScreen = ({ navigation }) => {
         {/* Step 1: Location */}
         {step === 1 && (
           <View>
-            <Text style={styles.stepTitle}>📍 Location</Text>
+            <Text style={styles.stepTitle}>LOCATION</Text>
             <TouchableOpacity style={styles.detectBtn} onPress={detectLocation} disabled={loading}>
               {loading ? <ActivityIndicator size="small" color={COLORS.primary} /> : <MaterialCommunityIcons name="crosshairs-gps" size={20} color={COLORS.primary} />}
-              <Text style={styles.detectBtnText}>Auto-detect my location</Text>
+              <Text style={styles.detectBtnText}>AUTO-DETECT LOCATION</Text>
             </TouchableOpacity>
 
             {form.lat && (
@@ -211,11 +211,11 @@ const GymRegistrationScreen = ({ navigation }) => {
             )}
 
             {[
-              { field: 'address', label: 'Street Address *', placeholder: 'e.g. 123 MG Road' },
-              { field: 'city', label: 'City *', placeholder: 'Bangalore' },
-              { field: 'state', label: 'State', placeholder: 'Karnataka' },
-              { field: 'pincode', label: 'Pincode', placeholder: '560001' },
-              { field: 'capacity', label: 'Max Capacity (members at once)', placeholder: '30' },
+              { field: 'address', label: 'STREET ADDRESS *', placeholder: 'e.g. 123 MG Road' },
+              { field: 'city', label: 'CITY *', placeholder: 'Bangalore' },
+              { field: 'state', label: 'STATE', placeholder: 'Karnataka' },
+              { field: 'pincode', label: 'PINCODE', placeholder: '560001' },
+              { field: 'capacity', label: 'MAX CAPACITY', placeholder: '30' },
             ].map(({ field, label, placeholder }) => (
               <View style={styles.inputGroup} key={field}>
                 <Text style={styles.label}>{label}</Text>
@@ -235,9 +235,9 @@ const GymRegistrationScreen = ({ navigation }) => {
         {/* Step 2: Facilities & Pricing */}
         {step === 2 && (
           <View>
-            <Text style={styles.stepTitle}>🛠️ Facilities & Pricing</Text>
+            <Text style={styles.stepTitle}>FACILITIES & PRICING</Text>
 
-            <Text style={styles.label}>Facilities *</Text>
+            <Text style={styles.label}>FACILITIES *</Text>
             <View style={styles.facilitiesGrid}>
               {FACILITIES_LIST.map((f) => (
                 <TouchableOpacity
@@ -245,12 +245,12 @@ const GymRegistrationScreen = ({ navigation }) => {
                   style={[styles.facilityChip, form.facilities.includes(f) && styles.facilityChipActive]}
                   onPress={() => toggleFacility(f)}
                 >
-                  <Text style={[styles.facilityChipText, form.facilities.includes(f) && styles.facilityChipTextActive]}>{f}</Text>
+                  <Text style={[styles.facilityChipText, form.facilities.includes(f) && styles.facilityChipTextActive]}>{f.toUpperCase()}</Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={[styles.label, { marginTop: SPACING.lg }]}>Pricing (₹)</Text>
+            <Text style={[styles.label, { marginTop: SPACING.lg }]}>PRICING (₹)</Text>
             {[
               { key: 'hourly', label: 'Per Hour' },
               { key: 'daily', label: 'Day Pass' },
@@ -258,7 +258,7 @@ const GymRegistrationScreen = ({ navigation }) => {
               { key: 'monthly', label: 'Monthly' },
             ].map(({ key, label }) => (
               <View style={styles.pricingRow} key={key}>
-                <Text style={styles.pricingLabel}>{label}</Text>
+                <Text style={styles.pricingLabel}>{label.toUpperCase()}</Text>
                 <TextInput
                   style={styles.pricingInput}
                   placeholder="0"
@@ -275,15 +275,15 @@ const GymRegistrationScreen = ({ navigation }) => {
         {/* Step 3: Documents */}
         {step === 3 && (
           <View>
-            <Text style={styles.stepTitle}>📄 Verification Documents</Text>
+            <Text style={styles.stepTitle}>VERIFICATION DOCUMENTS</Text>
             <Text style={styles.docNote}>
               All documents are securely encrypted and only visible to our verification team.
             </Text>
 
             {[
-              { key: 'businessLicense', label: '🏢 Business License *', required: true },
-              { key: 'gstCertificate', label: '📋 GST Certificate', required: false },
-              { key: 'ownerIdProof', label: '🪪 Owner ID Proof *', required: true },
+              { key: 'businessLicense', label: 'BUSINESS LICENSE *', required: true },
+              { key: 'gstCertificate', label: 'GST CERTIFICATE', required: false },
+              { key: 'ownerIdProof', label: 'OWNER ID PROOF *', required: true },
             ].map(({ key, label, required }) => (
               <View style={styles.docRow} key={key}>
                 <View style={styles.docInfo}>
@@ -294,9 +294,9 @@ const GymRegistrationScreen = ({ navigation }) => {
                   style={[styles.uploadBtn, docs[key] && styles.uploadBtnDone]}
                   onPress={() => pickDocument(key)}
                 >
-                  <MaterialCommunityIcons name={docs[key] ? 'check' : 'upload'} size={18} color={docs[key] ? '#fff' : COLORS.primary} />
-                  <Text style={[styles.uploadBtnText, docs[key] && { color: '#fff' }]}>
-                    {docs[key] ? 'Uploaded' : 'Upload'}
+                  <MaterialCommunityIcons name={docs[key] ? 'check' : 'upload'} size={18} color={docs[key] ? '#000' : COLORS.primary} />
+                  <Text style={[styles.uploadBtnText, docs[key] && { color: '#000' }]}>
+                    {docs[key] ? 'UPLOADED' : 'UPLOAD'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -310,7 +310,7 @@ const GymRegistrationScreen = ({ navigation }) => {
         {step > 0 && (
           <TouchableOpacity style={styles.prevBtn} onPress={() => setStep((s) => s - 1)}>
             <MaterialCommunityIcons name="arrow-left" size={20} color={COLORS.textPrimary} />
-            <Text style={styles.prevBtnText}>Back</Text>
+            <Text style={styles.prevBtnText}>BACK</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
@@ -319,11 +319,11 @@ const GymRegistrationScreen = ({ navigation }) => {
           disabled={!canProceed() || loading}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#000" />
           ) : (
             <>
-              <Text style={styles.nextBtnText}>{step < 3 ? 'Continue' : 'Submit for Review'}</Text>
-              <MaterialCommunityIcons name={step < 3 ? 'arrow-right' : 'send'} size={18} color="#fff" />
+              <Text style={styles.nextBtnText}>{step < 3 ? 'CONTINUE' : 'SUBMIT FOR REVIEW'}</Text>
+              <MaterialCommunityIcons name={step < 3 ? 'arrow-right' : 'send'} size={18} color="#000" />
             </>
           )}
         </TouchableOpacity>
@@ -338,37 +338,37 @@ const styles = StyleSheet.create({
   stepper: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: SPACING.base,
     paddingTop: 60, paddingBottom: SPACING.md, backgroundColor: COLORS.bgCard,
-    borderBottomWidth: 1, borderBottomColor: COLORS.border,
+    borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)',
   },
   stepItem: { alignItems: 'center', gap: 4 },
   stepCircle: {
     width: 28, height: 28, borderRadius: 14, backgroundColor: COLORS.bgElevated,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: COLORS.border,
+    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'rgba(255,255,255,0.06)',
   },
   stepCircleActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  stepNum: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, fontWeight: '700' },
-  stepLabel: { color: COLORS.textMuted, fontSize: 9, fontWeight: '600', textAlign: 'center', width: 55 },
+  stepNum: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, fontWeight: '800' },
+  stepLabel: { color: COLORS.textMuted, fontSize: 8, fontWeight: '800', textAlign: 'center', width: 55, letterSpacing: 0.3 },
   stepLabelActive: { color: COLORS.primary },
-  stepLine: { flex: 1, height: 2, backgroundColor: COLORS.border, marginBottom: 14 },
+  stepLine: { flex: 1, height: 2, backgroundColor: 'rgba(255,255,255,0.06)', marginBottom: 14 },
   stepLineActive: { backgroundColor: COLORS.primary },
 
   scroll: { padding: SPACING.base, paddingBottom: 120 },
-  stepTitle: { fontSize: FONTS.sizes.xl, fontWeight: '900', color: COLORS.textPrimary, marginBottom: SPACING.lg },
+  stepTitle: { fontSize: FONTS.sizes.xl, fontWeight: '950', color: COLORS.textPrimary, marginBottom: SPACING.lg, letterSpacing: 0.5 },
 
   inputGroup: { marginBottom: SPACING.md },
-  label: { fontSize: FONTS.sizes.sm, fontWeight: '600', color: COLORS.textSecondary, marginBottom: 6 },
+  label: { fontSize: 11, fontWeight: '800', color: COLORS.textSecondary, marginBottom: 6, letterSpacing: 0.5 },
   input: {
     backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, borderWidth: 1,
-    borderColor: COLORS.border, paddingHorizontal: SPACING.md, height: 50,
+    borderColor: 'rgba(255,255,255,0.06)', paddingHorizontal: SPACING.md, height: 50,
     color: COLORS.textPrimary, fontSize: FONTS.sizes.md,
   },
 
   imagePickerBtn: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
-    backgroundColor: `${COLORS.primary}15`, borderRadius: RADIUS.md, padding: SPACING.md,
-    borderWidth: 1, borderColor: `${COLORS.primary}40`, borderStyle: 'dashed', marginBottom: SPACING.sm,
+    backgroundColor: `${COLORS.primary}10`, borderRadius: RADIUS.md, padding: SPACING.md,
+    borderWidth: 1, borderColor: `${COLORS.primary}30`, borderStyle: 'dashed', marginBottom: SPACING.sm,
   },
-  imagePickerText: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base },
+  imagePickerText: { color: COLORS.primary, fontWeight: '800', fontSize: FONTS.sizes.sm, letterSpacing: 0.5 },
   imagePreview: { width: 80, height: 80, borderRadius: RADIUS.md, marginRight: SPACING.sm, position: 'relative' },
   previewImage: { width: '100%', height: '100%', borderRadius: RADIUS.md },
   removeImage: {
@@ -378,67 +378,67 @@ const styles = StyleSheet.create({
 
   detectBtn: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.sm,
-    backgroundColor: `${COLORS.primary}15`, borderRadius: RADIUS.md, padding: SPACING.md,
-    borderWidth: 1, borderColor: `${COLORS.primary}40`, marginBottom: SPACING.md,
+    backgroundColor: `${COLORS.primary}10`, borderRadius: RADIUS.md, padding: SPACING.md,
+    borderWidth: 1, borderColor: `${COLORS.primary}30`, marginBottom: SPACING.md,
   },
-  detectBtnText: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.base },
+  detectBtnText: { color: COLORS.primary, fontWeight: '800', fontSize: FONTS.sizes.sm, letterSpacing: 0.5 },
   coordsBox: { flexDirection: 'row', alignItems: 'center', gap: SPACING.xs, marginBottom: SPACING.md },
   coordsText: { color: COLORS.success, fontSize: FONTS.sizes.sm, fontWeight: '600' },
 
   facilitiesGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.xs },
   facilityChip: {
-    paddingHorizontal: SPACING.md, paddingVertical: 7, borderRadius: RADIUS.full,
-    backgroundColor: COLORS.bgCard, borderWidth: 1, borderColor: COLORS.border,
+    paddingHorizontal: SPACING.md, paddingVertical: 7, borderRadius: RADIUS.md,
+    backgroundColor: COLORS.bgCard, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
   facilityChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  facilityChipText: { color: COLORS.textSecondary, fontSize: FONTS.sizes.sm, fontWeight: '600' },
-  facilityChipTextActive: { color: '#fff' },
+  facilityChipText: { color: COLORS.textSecondary, fontSize: 11, fontWeight: '800', letterSpacing: 0.5 },
+  facilityChipTextActive: { color: '#000' },
 
   pricingRow: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, padding: SPACING.md,
-    marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border,
+    marginBottom: SPACING.sm, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
-  pricingLabel: { color: COLORS.textPrimary, fontWeight: '700', fontSize: FONTS.sizes.base },
+  pricingLabel: { color: COLORS.textPrimary, fontWeight: '800', fontSize: FONTS.sizes.sm, letterSpacing: 0.5 },
   pricingInput: {
-    width: 100, backgroundColor: COLORS.bgElevated, borderRadius: RADIUS.sm, borderWidth: 1,
-    borderColor: COLORS.border, paddingHorizontal: SPACING.sm, height: 40,
+    width: 100, backgroundColor: COLORS.bgCard, borderRadius: RADIUS.sm, borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)', paddingHorizontal: SPACING.sm, height: 40,
     color: COLORS.textPrimary, fontSize: FONTS.sizes.md, textAlign: 'right',
   },
 
   docNote: { color: COLORS.textMuted, fontSize: FONTS.sizes.sm, marginBottom: SPACING.lg, lineHeight: 20 },
   docRow: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.xl, padding: SPACING.md,
-    marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, padding: SPACING.md,
+    marginBottom: SPACING.sm, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
   docInfo: { flex: 1, marginRight: SPACING.sm },
-  docLabel: { color: COLORS.textPrimary, fontWeight: '700', fontSize: FONTS.sizes.base },
+  docLabel: { color: COLORS.textPrimary, fontWeight: '800', fontSize: FONTS.sizes.sm, letterSpacing: 0.5 },
   docName: { color: COLORS.textMuted, fontSize: FONTS.sizes.xs, marginTop: 2 },
   uploadBtn: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.xs,
     borderRadius: RADIUS.md, paddingHorizontal: SPACING.md, paddingVertical: 8,
-    backgroundColor: `${COLORS.primary}15`, borderWidth: 1, borderColor: `${COLORS.primary}40`,
+    backgroundColor: `${COLORS.primary}10`, borderWidth: 1, borderColor: `${COLORS.primary}30`,
   },
-  uploadBtnDone: { backgroundColor: COLORS.success, borderColor: COLORS.success },
-  uploadBtnText: { color: COLORS.primary, fontWeight: '700', fontSize: FONTS.sizes.sm },
+  uploadBtnDone: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
+  uploadBtnText: { color: COLORS.primary, fontWeight: '800', fontSize: 10, letterSpacing: 0.5 },
 
   navBar: {
     flexDirection: 'row', gap: SPACING.sm, padding: SPACING.base,
-    backgroundColor: COLORS.bgCard, borderTopWidth: 1, borderTopColor: COLORS.border,
+    backgroundColor: COLORS.bgCard, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)',
   },
   prevBtn: {
     flexDirection: 'row', alignItems: 'center', gap: SPACING.xs,
-    backgroundColor: COLORS.bgElevated, borderRadius: RADIUS.xl, paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md,
-    borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: COLORS.bgCard, borderRadius: RADIUS.md, paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
   },
-  prevBtnText: { color: COLORS.textPrimary, fontWeight: '700', fontSize: FONTS.sizes.base },
+  prevBtnText: { color: COLORS.textPrimary, fontWeight: '800', fontSize: 11, letterSpacing: 0.5 },
   nextBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: SPACING.xs,
-    backgroundColor: COLORS.primary, borderRadius: RADIUS.xl, paddingVertical: SPACING.md, ...SHADOWS.glow,
+    backgroundColor: COLORS.primary, borderRadius: RADIUS.md, paddingVertical: SPACING.md, ...SHADOWS.glow,
   },
   nextBtnDisabled: { opacity: 0.5 },
-  nextBtnText: { color: '#fff', fontWeight: '800', fontSize: FONTS.sizes.md },
+  nextBtnText: { color: '#000', fontWeight: '900', fontSize: FONTS.sizes.md, letterSpacing: 0.5 },
 });
 
 export default GymRegistrationScreen;
