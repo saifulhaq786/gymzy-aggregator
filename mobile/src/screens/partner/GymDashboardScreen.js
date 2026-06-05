@@ -255,7 +255,8 @@ const GymDashboardScreen = ({ navigation }) => {
                   </TouchableOpacity>
                 )}
               </View>
-            ))}
+              ))
+            )}
           </View>
         ) : (
           <View style={styles.settingsSection}>
