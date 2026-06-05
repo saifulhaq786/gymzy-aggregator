@@ -1,64 +1,84 @@
-// App Color Palette
+// ═══════════════════════════════════════════════════════════════
+// GYMZY DESIGN SYSTEM — Professional UI Token Library
+// Inspired by: Nike Training Club · Cult.fit · Zomato · Swiggy
+// ═══════════════════════════════════════════════════════════════
+
 export const COLORS = {
-  // Primary brand
-  primary: '#CAFC07',       // Premium Electric Volt
-  primaryDark: '#94C300',
-  primaryLight: '#DBFF45',
+  // ── Brand ─────────────────────────────────────────────────────
+  primary: '#C8FF00',          // Electric Volt (action, CTA, highlights)
+  primaryDark: '#9DCC00',      // Pressed state
+  primaryLight: '#DEFF4D',     // Lighter tint
+  primaryMuted: 'rgba(200,255,0,0.12)', // Subtle tint bg
 
-  // Accent
-  accent: '#00E5FF',        // Electric Cyan/Teal
+  // ── Surface / Background ───────────────────────────────────────
+  bg: '#0A0A0A',               // True deep black
+  bgCard: '#111111',           // Slightly lifted card surface
+  bgElevated: '#181818',       // Modals, dropdowns
+  bgModal: '#1C1C1E',          // Bottom sheets (iOS-style dark)
+  bgInput: '#141414',          // Input fields
 
-  // Background
-  bg: '#08090C',            // Deep Obsidian Dark
-  bgCard: '#11141A',        // Slate Card background
-  bgElevated: '#171B26',
-  bgModal: '#1A1E29',
-
-  // Text
+  // ── Typography ────────────────────────────────────────────────
   textPrimary: '#FFFFFF',
-  textSecondary: '#94A3B8', // Cool grey
-  textMuted: '#64748B',
+  textSecondary: '#A1A1AA',    // Zinc-400 equivalent — clear hierarchy
+  textMuted: '#52525B',        // Zinc-600 — de-emphasized
+  textInverse: '#000000',      // On bright backgrounds
 
-  // Status
-  success: '#10B981',       // Clean Emerald
-  warning: '#F59E0B',
-  error: '#EF4444',
-  info: '#3B82F6',
+  // ── Status ────────────────────────────────────────────────────
+  success: '#22C55E',          // Green-500
+  successMuted: 'rgba(34,197,94,0.12)',
+  warning: '#F59E0B',          // Amber-500
+  warningMuted: 'rgba(245,158,11,0.12)',
+  error: '#EF4444',            // Red-500
+  errorMuted: 'rgba(239,68,68,0.12)',
+  info: '#3B82F6',             // Blue-500
+  infoMuted: 'rgba(59,130,246,0.12)',
 
-  // Availability
-  available: '#10B981',
+  // ── Functional ────────────────────────────────────────────────
+  available: '#22C55E',
   almostFull: '#F59E0B',
   full: '#EF4444',
+  star: '#FBBF24',             // Amber-400
 
-  // Borders
-  border: '#1E293B',
-  borderLight: '#334155',
+  // ── Borders ───────────────────────────────────────────────────
+  border: 'rgba(255,255,255,0.08)',
+  borderStrong: 'rgba(255,255,255,0.14)',
+  borderSubtle: 'rgba(255,255,255,0.04)',
 
-  // Rating
-  star: '#FFD700',
+  // ── Overlays ──────────────────────────────────────────────────
+  overlay: 'rgba(0,0,0,0.6)',
+  overlayStrong: 'rgba(0,0,0,0.85)',
+  scrim: 'rgba(10,10,10,0.9)',
 
-  // Overlay
-  overlay: 'rgba(0,0,0,0.7)',
+  // ── Accent ────────────────────────────────────────────────────
+  accent: '#7C3AED',           // Violet — used sparingly
 };
 
 export const FONTS = {
-  regular: 'System',
-  medium: 'System',
-  bold: 'System',
   sizes: {
+    '2xs': 9,
     xs: 10,
     sm: 12,
     base: 14,
-    md: 16,
-    lg: 18,
+    md: 15,
+    lg: 17,
     xl: 20,
     '2xl': 24,
-    '3xl': 30,
-    '4xl': 36,
+    '3xl': 28,
+    '4xl': 34,
+    '5xl': 42,
+  },
+  weight: {
+    regular: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
+    extrabold: '800',
+    black: '900',
   },
 };
 
 export const SPACING = {
+  '2xs': 2,
   xs: 4,
   sm: 8,
   md: 12,
@@ -67,41 +87,73 @@ export const SPACING = {
   xl: 24,
   '2xl': 32,
   '3xl': 48,
+  '4xl': 64,
 };
 
 export const RADIUS = {
-  sm: 6,
-  md: 10,
+  xs: 4,
+  sm: 8,
+  md: 12,
   lg: 16,
-  xl: 24,
-  full: 999,
+  xl: 20,
+  '2xl': 28,
+  full: 9999,
 };
 
 export const SHADOWS = {
+  none: {},
+  xs: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 1,
+  },
   sm: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 3,
   },
   md: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 6,
   },
+  lg: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.45,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  xl: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 18,
+  },
   glow: {
-    shadowColor: '#CAFC07',
+    shadowColor: '#C8FF00',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  glowStrong: {
+    shadowColor: '#C8FF00',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 12,
   },
 };
 
-// Facility icons mapping (from @expo/vector-icons MaterialCommunityIcons)
+// ── Facility Icons ─────────────────────────────────────────────
 export const FACILITY_ICONS = {
   'AC': 'air-conditioner',
   'Parking': 'parking',
