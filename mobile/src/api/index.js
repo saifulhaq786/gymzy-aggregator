@@ -3,25 +3,20 @@ import axios from 'axios';
 import SecureStore from '../utils/secureStore';
 import Constants from 'expo-constants';
 
-let BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl || 'http://localhost:5001/api';
+let BASE_URL = 'http://localhost:5001/api'; // Safe fallback
 
-if (Platform.OS === 'web') {
-  if (typeof window !== 'undefined' && window.location) {
-    const hostname = window.location.hostname;
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      BASE_URL = 'https://gymzy-aggregator.onrender.com/api';
+if (__DEV__) {
+  // Try to use the Expo host IP so physical devices can connect
+  const hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.debuggerHost;
+  if (hostUri) {
+    const host = hostUri.split(':')[0];
+    if (host && host !== 'localhost' && host !== '127.0.0.1') {
+      BASE_URL = `http://${host}:5001/api`;
     }
   }
 } else {
-  if (__DEV__) {
-    const hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.debuggerHost;
-    if (hostUri) {
-      const host = hostUri.split(':')[0];
-      if (host && host !== 'localhost' && host !== '127.0.0.1') {
-        BASE_URL = `http://${host}:5001/api`;
-      }
-    }
-  }
+  // Only use Render URL in production builds
+  BASE_URL = 'https://gymzy-aggregator.onrender.com/api';
 }
 
 console.log('Backend API Base URL:', BASE_URL);
