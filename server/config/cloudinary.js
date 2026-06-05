@@ -38,6 +38,15 @@ const upload = multer({
  */
 const uploadToCloudinary = (buffer, folder = 'gymzy', resourceType = 'image') => {
   return new Promise((resolve, reject) => {
+    // Graceful bypass for local testing if Cloudinary is not configured
+    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+      console.warn('⚠️ Cloudinary not configured. Bypassing upload and returning placeholder URL.');
+      return resolve({
+        secure_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
+        public_id: `mock_${Date.now()}`
+      });
+    }
+
     const stream = cloudinary.uploader.upload_stream(
       { folder, resource_type: resourceType },
       (error, result) => {
