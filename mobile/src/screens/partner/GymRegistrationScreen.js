@@ -79,9 +79,10 @@ const GymRegistrationScreen = ({ navigation }) => {
     if (!form.name || !form.address || !form.city || !form.lat || !form.lng) {
       return Alert.alert('Error', 'Please complete all required fields including location.');
     }
-    if (!docs.businessLicense || !docs.ownerIdProof) {
-      return Alert.alert('Error', 'Business license and Owner ID proof are required.');
-    }
+    // Documents made optional for trial purposes
+    // if (!docs.businessLicense || !docs.ownerIdProof) {
+    //   return Alert.alert('Error', 'Business license and Owner ID proof are required.');
+    // }
 
     setLoading(true);
     try {
@@ -281,9 +282,9 @@ const GymRegistrationScreen = ({ navigation }) => {
             </Text>
 
             {[
-              { key: 'businessLicense', label: 'BUSINESS LICENSE *', required: true },
+              { key: 'businessLicense', label: 'BUSINESS LICENSE', required: false },
               { key: 'gstCertificate', label: 'GST CERTIFICATE', required: false },
-              { key: 'ownerIdProof', label: 'OWNER ID PROOF *', required: true },
+              { key: 'ownerIdProof', label: 'OWNER ID PROOF', required: false },
             ].map(({ key, label, required }) => (
               <View style={styles.docRow} key={key}>
                 <View style={styles.docInfo}>
