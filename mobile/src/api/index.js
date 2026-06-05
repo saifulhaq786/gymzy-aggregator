@@ -100,6 +100,7 @@ export const bookingAPI = {
   create: (data) => api.post('/bookings', data),
   verifyPayment: (data) => api.post('/bookings/verify-payment', data),
   getMyBookings: (params) => api.get('/bookings/my', { params }),
+  getGymBookings: (gymId, params) => api.get(`/bookings/gym/${gymId}`, { params }),
   checkIn: (id, qrCodeData) => api.post(`/bookings/${id}/checkin`, { qrCodeData }),
   cancel: (id, reason) => api.put(`/bookings/${id}/cancel`, { reason }),
 };

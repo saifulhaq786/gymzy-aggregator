@@ -13,20 +13,40 @@ const GymDashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('bookings'); // 'bookings' | 'settings'
 
-  // MOCK bookings to make dashboard look rich and alive, combined with state for check-ins
-  const [bookings, setBookings] = useState([
-    { id: 'b1', name: 'Rahul Sharma', time: '07:00 AM - 08:00 AM', status: 'Confirmed', checkedIn: true, plan: 'Hourly Pass' },
-    { id: 'b2', name: 'Priya Patel', time: '09:30 AM - 10:30 AM', status: 'Confirmed', checkedIn: false, plan: 'Day Pass' },
-    { id: 'b3', name: 'Amit Roy', time: '11:00 AM - 12:00 PM', status: 'Confirmed', checkedIn: false, plan: 'Monthly' },
-    { id: 'b4', name: 'Sneha Reddy', time: '05:00 PM - 06:00 PM', status: 'Confirmed', checkedIn: false, plan: 'Hourly Pass' },
-  ]);
+  const [bookings, setBookings] = useState([]);
+  const [stats, setStats] = useState({ revenue: 0, checkIns: 0 });
 
   const fetchMyGyms = useCallback(async () => {
     try {
       const { data } = await gymAPI.getMyGyms();
-      setGyms(data.gyms || []);
+      const userGyms = data.gyms || [];
+      setGyms(userGyms);
+      
+      if (userGyms.length > 0) {
+        // Fetch real bookings for the first gym
+        const bookingsData = await bookingAPI.getGymBookings(userGyms[0]._id);
+        const fetchedBookings = bookingsData.data.bookings || [];
+        
+        // Format them for the UI
+        const formatted = fetchedBookings.map(b => ({
+          id: b._id,
+          name: b.userId?.name || 'Unknown User',
+          time: `${b.startTime || ''} - ${b.endTime || ''}`,
+          status: b.status,
+          checkedIn: b.status === 'checked_in',
+          plan: b.type.replace('_', ' ').toUpperCase(),
+          amount: b.amount || 0,
+        }));
+        
+        setBookings(formatted);
+        
+        // Calculate basic stats
+        const checkedInCount = formatted.filter(b => b.checkedIn).length;
+        const totalRevenue = formatted.reduce((sum, b) => sum + b.amount, 0);
+        setStats({ revenue: totalRevenue, checkIns: checkedInCount });
+      }
     } catch (err) {
-      console.error('Error fetching partner gyms:', err.message);
+      console.error('Error fetching partner gym data:', err.message);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -45,16 +65,24 @@ const GymDashboardScreen = ({ navigation }) => {
   const handleCheckIn = (bookingId, name) => {
     Alert.alert(
       'Verify Check-In',
-      `Confirm check-in request for ${name}?`,
+      `Confirm manual check-in request for ${name}?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Confirm',
-          onPress: () => {
-            setBookings(prev =>
-              prev.map(b => b.id === bookingId ? { ...b, checkedIn: true } : b)
-            );
-            Alert.alert('Success', `${name} successfully checked in.`);
+          onPress: async () => {
+            try {
+              // Note: Usually checkin requires a QR code, but manual bypass for partners
+              // We'll update the UI state optimistically
+              setBookings(prev =>
+                prev.map(b => b.id === bookingId ? { ...b, checkedIn: true, status: 'checked_in' } : b)
+              );
+              setStats(s => ({ ...s, checkIns: s.checkIns + 1 }));
+              Alert.alert('Success', `${name} successfully checked in.`);
+              // TODO: If you have a specific manual checkin endpoint, call it here
+            } catch (err) {
+              Alert.alert('Error', 'Failed to check in manually.');
+            }
           }
         }
       ]
@@ -166,13 +194,13 @@ const GymDashboardScreen = ({ navigation }) => {
             <View style={styles.metricsGrid}>
               <View style={styles.metricCard}>
                 <MaterialCommunityIcons name="currency-inr" size={22} color={COLORS.primary} />
-                <Text style={styles.metricVal}>₹8,450</Text>
-                <Text style={styles.metricLbl}>TODAY'S REVENUE</Text>
+                <Text style={styles.metricVal}>₹{stats.revenue.toLocaleString()}</Text>
+                <Text style={styles.metricLbl}>TOTAL REVENUE</Text>
               </View>
               <View style={styles.metricCard}>
                 <MaterialCommunityIcons name="account-group" size={22} color={COLORS.primary} />
                 <Text style={styles.metricVal}>
-                  {bookings.filter(b => b.checkedIn).length}/{bookings.length}
+                  {stats.checkIns}/{bookings.length}
                 </Text>
                 <Text style={styles.metricLbl}>CHECKED IN</Text>
               </View>
@@ -184,8 +212,13 @@ const GymDashboardScreen = ({ navigation }) => {
             </View>
 
             {/* Bookings Section */}
-            <Text style={styles.sectionTitle}>TODAY'S SCHEDULE</Text>
-            {bookings.map((booking) => (
+            <Text style={styles.sectionTitle}>TODAY'S SCHEDULE ({bookings.length})</Text>
+            {bookings.length === 0 ? (
+              <Text style={{ color: COLORS.textMuted, fontSize: 13, padding: 20, textAlign: 'center' }}>
+                No bookings found for this gym yet.
+              </Text>
+            ) : (
+              bookings.map((booking) => (
               <View key={booking.id} style={styles.bookingCard}>
                 <View style={styles.bookingHeader}>
                   <View>

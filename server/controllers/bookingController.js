@@ -165,6 +165,40 @@ exports.getMyBookings = async (req, res) => {
 };
 
 /**
+ * GET /api/bookings/gym/:gymId
+ * Get all bookings for a specific gym (Owner/Admin only)
+ */
+exports.getGymBookings = async (req, res) => {
+  const { gymId } = req.params;
+  const { status, date } = req.query;
+
+  // Verify ownership
+  const gym = await Gym.findById(gymId);
+  if (!gym) return res.status(404).json({ success: false, message: 'Gym not found.' });
+
+  if (gym.ownerId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Not authorized to view these bookings.' });
+  }
+
+  const query = { gymId };
+  if (status) query.status = status;
+  
+  if (date) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    query.startDate = { $gte: startOfDay, $lte: endOfDay };
+  }
+
+  const bookings = await Booking.find(query)
+    .populate('userId', 'name email phone profilePhoto')
+    .sort({ startDate: 1, startTime: 1 });
+
+  res.json({ success: true, count: bookings.length, bookings });
+};
+
+/**
  * POST /api/bookings/:id/checkin
  * QR code check-in
  */
